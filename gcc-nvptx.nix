@@ -45,6 +45,12 @@ stdenv.mkDerivation {
     "--enable-languages=c,c++,lto"
   ];
 
+  postInstall = ''
+    for f in ${nvptxTools}/nvptx-none/bin/*; do
+      ln -s $f $out/libexec/gcc/x86_64-pc-linux-gnu/10.2.0/accel/nvptx-none
+    done
+  '';
+
   dontDisableStatic = true;
   doCheck = false;
 }
