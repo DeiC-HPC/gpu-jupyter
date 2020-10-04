@@ -8,8 +8,8 @@ stdenv.mkDerivation {
   };
   phases = [ "unpackPhase" ];
 
-  preUnpack = ''
+  unpackPhase = ''
     mkdir $out
-    cd $out
+    tar zxf $src -C $out --strip-components=1
   '';
 }

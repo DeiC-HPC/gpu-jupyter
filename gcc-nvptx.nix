@@ -1,4 +1,4 @@
-{ callPackage, stdenv, fetchurl, texinfo, which, gettext, perl, newlib, gmp, mpfr, libmpc, libelf }:
+{ callPackage, stdenv, fetchurl, texinfo, which, gettext, perl, newlib, gmp, mpfr, libmpc, libelf, glibc }:
 
 let majorVersion = "10";
     version = "${majorVersion}.2.0";
@@ -15,8 +15,6 @@ stdenv.mkDerivation {
     sha256 = "130xdkhmz1bc2kzx061s3sfwk36xah1fw5w332c0nzwwpdl47pdq";
   };
 
-  outputs = [ "out" "man" "info" "lib" ];
-
   hardeningDisable = [ "format" "pie" ];
 
   nativeBuildInputs = [ texinfo which gettext perl gmp mpfr libmpc libelf ];
@@ -29,13 +27,13 @@ stdenv.mkDerivation {
   '';
 
   postUnpack = ''
-    ln -s ${newlib} gcc-${version}/newlib
+    ln -s ${newlib}/newlib gcc-${version}/newlib
   '';
 
   configurePhase = ''
     mkdir build
     cd build
-    ../configure $configureFlags
+    ../configure $configureFlags --prefix=$out
   '';
 
   configureFlags = [
@@ -44,5 +42,9 @@ stdenv.mkDerivation {
     "--with-build-time-tools=${nvptxTools}/nvptx-none/bin"
     "--disable-sjlj-exceptions"
     "--enable-newlib-io-long-long"
+    "--enable-languages=c,c++,lto"
   ];
+
+  dontDisableStatic = true;
+  doCheck = false;
 }
