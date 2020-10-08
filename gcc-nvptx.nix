@@ -1,9 +1,7 @@
-{ callPackage, stdenv, fetchurl, texinfo, which, gettext, perl, newlib, gmp, mpfr, libmpc, libelf, glibc }:
+{ callPackage, stdenv, fetchurl, texinfo, which, gettext, perl, gmp, mpfr, libmpc, libelf, glibc, nvptxTools, newlibSource }:
 
 let majorVersion = "10";
     version = "${majorVersion}.2.0";
-    nvptxTools = callPackage ./nvptx-tools.nix { };
-    newlib = callPackage ./newlib.nix { };
 in
 
 stdenv.mkDerivation {
@@ -27,7 +25,7 @@ stdenv.mkDerivation {
   '';
 
   postUnpack = ''
-    ln -s ${newlib}/newlib gcc-${version}/newlib
+    ln -s ${newlibSource}/newlib gcc-${version}/newlib
   '';
 
   configurePhase = ''
