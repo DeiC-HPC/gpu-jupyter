@@ -18,9 +18,9 @@
         gccNvptx = pkgs.callPackage ./gcc-nvptx.nix {
           inherit newlibSource nvptxTools;
         };
-        gccTest = pkgs.callPackage ./gcc-test.nix {
+        gccTest = pkgs.wrapCC (pkgs.callPackage ./gcc-test.nix {
           inherit nixpkgs gccNvptx;
-        };
+        });
         foo = pkgs.callPackage ./foo.nix {
           inherit gccTest;
         };
