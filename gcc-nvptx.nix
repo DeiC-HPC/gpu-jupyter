@@ -5,7 +5,7 @@ let majorVersion = "10";
 in
 
 stdenv.mkDerivation {
-  pname = "gcc";
+  pname = "gcc-nvptx";
   inherit version;  
 
   src = fetchurl {

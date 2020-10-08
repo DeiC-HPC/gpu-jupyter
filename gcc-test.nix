@@ -17,13 +17,10 @@ let majorVersion = "10";
     patches =
          optional (targetPlatform != hostPlatform) "${nixpkgs}/pkgs/development/compilers/gcc/libstdc++-target.patch"
       ++ [ "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch" ];
-
-    /* Cross-gcc settings (build == host != target) */
-    crossNameAddon = optionalString (targetPlatform != hostPlatform) "${targetPlatform.config}-stage-final-";
 in
 
 stdenv.mkDerivation {
-  pname = "${crossNameAddon}gcc";
+  pname = "gcc-offload";
   inherit version;
 
   builder = "${nixpkgs}/pkgs/development/compilers/gcc/builder.sh";
@@ -140,8 +137,9 @@ stdenv.mkDerivation {
   enableParallelBuilding = true;
   enableMultilib = false;
 
-  postInstall = ''
-    ln -s ${gccNvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/accel/nvptx-none $out/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/accel/nvptx-none
+  postFixup = ''
+    mkdir -p $out/nix-support
+    echo ' -B${gccNvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0 ' >> $out/nix-support/cc-cflags
   '';
 
   inherit (stdenv) is64bit;
