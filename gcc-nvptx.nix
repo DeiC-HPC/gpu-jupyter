@@ -36,7 +36,7 @@ stdenv.mkDerivation {
 
   configureFlags = [
     "--target=nvptx-none"
-    "--enable-as-accelerator-for=x86_64-pc-linux-gnu"
+    "--enable-as-accelerator-for=x86_64-unknown-linux-gnu"
     "--with-build-time-tools=${nvptxTools}/nvptx-none/bin"
     "--disable-sjlj-exceptions"
     "--enable-newlib-io-long-long"
@@ -45,7 +45,7 @@ stdenv.mkDerivation {
 
   postInstall = ''
     for f in ${nvptxTools}/nvptx-none/bin/*; do
-      ln -s $f $out/libexec/gcc/x86_64-pc-linux-gnu/10.2.0/accel/nvptx-none
+      ln -s $f $out/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/accel/nvptx-none
     done
   '';
 

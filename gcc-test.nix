@@ -140,5 +140,9 @@ stdenv.mkDerivation {
   enableParallelBuilding = true;
   enableMultilib = false;
 
+  postInstall = ''
+    ln -s ${gccNvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/accel/nvptx-none $out/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/accel/nvptx-none
+  '';
+
   inherit (stdenv) is64bit;
 }
