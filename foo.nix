@@ -7,6 +7,6 @@ stdenv.mkDerivation {
   name = "foo";
   phases = [ "buildPhase" ];
   buildPhase = ''
-    ${cc}/bin/gcc -o $out
+    echo 'int main(){}' | ${cc}/bin/gcc -xc - -o $out
   '';
 }
