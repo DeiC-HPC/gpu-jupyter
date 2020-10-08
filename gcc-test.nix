@@ -18,11 +18,7 @@
 , zlib ? null
 , enablePlugin ? stdenv.hostPlatform == stdenv.buildPlatform # Whether to support user-supplied plug-ins
 , name ? "gcc"
-, threadsCross ? null # for MinGW
 , crossStageStatic ? false
-, # Strip kills static libs of other archs (hence no cross)
-  stripped ? stdenv.hostPlatform == stdenv.buildPlatform
-          && stdenv.targetPlatform == stdenv.hostPlatform
 , buildPackages
 }:
 
@@ -45,7 +41,7 @@ let majorVersion = "10";
 in
 
 stdenv.mkDerivation {
-  pname = "${crossNameAddon}${name}${if stripped then "" else "-debug"}";
+  pname = "${crossNameAddon}${name}";
   inherit version;
 
   builder = "${nixpkgs}/pkgs/development/compilers/gcc/builder.sh";
@@ -118,8 +114,7 @@ stdenv.mkDerivation {
   noSysDirs = true;
 
   depsBuildBuild = [ buildPackages.stdenv.cc ];
-  nativeBuildInputs = [ texinfo which gettext ]
-    ++ (optional (perl != null) perl);
+  nativeBuildInputs = [ texinfo which gettext perl ];
 
   # For building runtime libs
   depsBuildTarget =
@@ -130,7 +125,7 @@ stdenv.mkDerivation {
         stdenv.cc
       ]
     )
-    ++ optional targetPlatform.isLinux patchelf;
+    ++ [ patchelf ];
 
   buildInputs = [
     gmp mpfr libmpc libelf
@@ -138,8 +133,6 @@ stdenv.mkDerivation {
     isl
     zlib
   ];
-
-  depsTargetTarget = optional (!crossStageStatic && threadsCross != null) threadsCross;
 
   NIX_LDFLAGS = stdenv.lib.optionalString  hostPlatform.isSunOS "-lm -ldl";
 
@@ -180,16 +173,7 @@ stdenv.mkDerivation {
 
   targetConfig = if targetPlatform != hostPlatform then targetPlatform.config else null;
 
-#  buildFlags = optional
-#    (targetPlatform == hostPlatform && hostPlatform == buildPlatform)
-#    (if profiledCompiler then "profiledbootstrap" else "bootstrap");
-
-  dontStrip = !stripped;
-
-  installTargets = optional stripped "install-strip";
-
-  # https://gcc.gnu.org/install/specific.html#x86-64-x-solaris210
-  ${if hostPlatform.system == "x86_64-solaris" then "CC" else null} = "gcc -m64";
+  dontStrip = true;
 
   # Setting $CPATH and $LIBRARY_PATH to make sure both `gcc' and `xgcc' find the
   # library headers and binaries, regarless of the language being compiled.
@@ -208,16 +192,12 @@ stdenv.mkDerivation {
 
   inherit
     (import "${nixpkgs}/pkgs/development/compilers/gcc/common/extra-target-flags.nix" {
-      inherit stdenv crossStageStatic libcCross threadsCross;
+      inherit stdenv crossStageStatic libcCross;
+      threadsCross = null;
     })
     EXTRA_FLAGS_FOR_TARGET
     EXTRA_LDFLAGS_FOR_TARGET
     ;
-
-  passthru = {
-    inherit langC langCC langObjC langObjCpp langAda langFortran langGo version;
-    isGNU = true;
-  };
 
   enableParallelBuilding = true;
   enableMultilib = false;
