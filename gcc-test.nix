@@ -1,24 +1,7 @@
 { nixpkgs
 , stdenv, targetPackages, fetchurl, fetchpatch
-, langC ? true, langCC ? true, langFortran ? false
-, langAda ? false
-, langObjC ? stdenv.targetPlatform.isDarwin
-, langObjCpp ? stdenv.targetPlatform.isDarwin
-, langGo ? false
-, profiledCompiler ? false
-, langJit ? false
-, staticCompiler ? false
-, enableShared ? true
-, enableLTO ? true
-, texinfo ? null
-, perl ? null # optional, for texi2pod (then pod2man)
-, gmp, mpfr, libmpc, gettext, which, patchelf
-, libelf                      # optional, for link-time optimizations (LTO)
-, isl ? null # optional, for the Graphite optimization framework.
-, zlib ? null
-, enablePlugin ? stdenv.hostPlatform == stdenv.buildPlatform # Whether to support user-supplied plug-ins
-, name ? "gcc"
-, crossStageStatic ? false
+, texinfo, perl, gmp, mpfr, libmpc, gettext, which, patchelf, libelf
+, isl, zlib
 , buildPackages
 }:
 
@@ -27,7 +10,6 @@ with builtins;
 
 let majorVersion = "10";
     version = "${majorVersion}.2.0";
-    libcCross = null;
 
     inherit (stdenv) buildPlatform hostPlatform targetPlatform;
 
@@ -36,12 +18,11 @@ let majorVersion = "10";
       ++ [ "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch" ];
 
     /* Cross-gcc settings (build == host != target) */
-    stageNameAddon = if crossStageStatic then "stage-static" else "stage-final";
-    crossNameAddon = optionalString (targetPlatform != hostPlatform) "${targetPlatform.config}-${stageNameAddon}-";
+    crossNameAddon = optionalString (targetPlatform != hostPlatform) "${targetPlatform.config}-stage-final-";
 in
 
 stdenv.mkDerivation {
-  pname = "${crossNameAddon}${name}";
+  pname = "${crossNameAddon}gcc";
   inherit version;
 
   builder = "${nixpkgs}/pkgs/development/compilers/gcc/builder.sh";
@@ -61,19 +42,6 @@ stdenv.mkDerivation {
 
   hardeningDisable = [ "format" "pie" ];
 
-  # This should kill all the stdinc frameworks that gcc and friends like to
-  # insert into default search paths.
-  prePatch = stdenv.lib.optionalString hostPlatform.isDarwin ''
-    substituteInPlace gcc/config/darwin-c.c \
-      --replace 'if (stdinc)' 'if (0)'
-
-    substituteInPlace libgcc/config/t-slibgcc-darwin \
-      --replace "-install_name @shlib_slibdir@/\$(SHLIB_INSTALL_NAME)" "-install_name ''${!outputLib}/lib/\$(SHLIB_INSTALL_NAME)"
-
-    substituteInPlace libgfortran/configure \
-      --replace "-install_name \\\$rpath/\\\$soname" "-install_name ''${!outputLib}/lib/\\\$soname"
-  '';
-
   postPatch = ''
     configureScripts=$(find . -name configure)
     for configureScript in $configureScripts; do
@@ -84,7 +52,7 @@ stdenv.mkDerivation {
       # On NixOS, use the right path to the dynamic linker instead of
       # `/lib/ld*.so'.
       let
-        libc = if libcCross != null then libcCross else stdenv.cc.libc;
+        libc = stdenv.cc.libc;
       in
         (
         '' echo "fixing the \`GLIBC_DYNAMIC_LINKER', \`UCLIBC_DYNAMIC_LINKER', and \`MUSL_DYNAMIC_LINKER' macros..."
@@ -97,19 +65,11 @@ stdenv.mkDerivation {
                  -e 's|define[[:blank:]]*MUSL_DYNAMIC_LINKER\([0-9]*\)[[:blank:]]"\([^\"]\+\)"$|define MUSL_DYNAMIC_LINKER\1 "${libc.out}\2"|g'
            done
         ''
-        + stdenv.lib.optionalString (targetPlatform.libc == "musl")
-        ''
-            sed -i gcc/config/linux.h -e '1i#undef LOCAL_INCLUDE_DIR'
-        ''
         )
-    else "")
-      + stdenv.lib.optionalString targetPlatform.isAvr ''
-	        makeFlagsArray+=(
-	           'LIMITS_H_TEST=false'
-	        )
-	      '';
+    else "");
 
-  inherit staticCompiler crossStageStatic libcCross;
+  crossStageStatic = false;
+  staticCompiler = false;
   crossMingw = false;
   noSysDirs = true;
 
@@ -134,41 +94,26 @@ stdenv.mkDerivation {
     zlib
   ];
 
-  NIX_LDFLAGS = stdenv.lib.optionalString  hostPlatform.isSunOS "-lm -ldl";
-
-  preConfigure = import "${nixpkgs}/pkgs/development/compilers/gcc/common/pre-configure.nix" {
-    inherit (stdenv) lib;
-    inherit version hostPlatform langAda langGo;
-  };
-
   dontDisableStatic = true;
 
-  # TODO(@Ericson2314): Always pass "--target" and always prefix.
-  configurePlatforms = [ "build" "host" ] ++ stdenv.lib.optional (targetPlatform != hostPlatform) "target";
+  configurePlatforms = [ "build" "host" "target" ];
 
   configureFlags = (import "${nixpkgs}/pkgs/development/compilers/gcc/common/configure-flags.nix" {
-    inherit
-      stdenv
-      targetPackages
-      crossStageStatic libcCross
-      version
-
-      gmp mpfr libmpc libelf isl
-
-      enableLTO
-      enablePlugin
-      enableShared
-
-      langC
-      langCC
-      langFortran
-      langAda
-      langGo
-      langObjC
-      langObjCpp
-      langJit
-      ;
+    inherit stdenv targetPackages version gmp mpfr libmpc libelf isl;
+    libcCross = null;
+    crossStageStatic = false;
+    enableShared = true;
     enableMultilib = false;
+    enablePlugin = false;
+    enableLTO = true;
+    langC = true;
+    langCC = true;
+    langFortran = false;
+    langAda = false;
+    langGo = false;
+    langObjC = false;
+    langObjCpp = false;
+    langJit = false;
   }) ++ [ "--disable-bootstrap" ];
 
   targetConfig = if targetPlatform != hostPlatform then targetPlatform.config else null;
@@ -189,15 +134,6 @@ stdenv.mkDerivation {
   ));
 
   LIBRARY_PATH = optionals (targetPlatform == hostPlatform) (makeLibraryPath (optional (zlib != null) zlib));
-
-  inherit
-    (import "${nixpkgs}/pkgs/development/compilers/gcc/common/extra-target-flags.nix" {
-      inherit stdenv crossStageStatic libcCross;
-      threadsCross = null;
-    })
-    EXTRA_FLAGS_FOR_TARGET
-    EXTRA_LDFLAGS_FOR_TARGET
-    ;
 
   enableParallelBuilding = true;
   enableMultilib = false;
