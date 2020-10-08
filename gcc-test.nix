@@ -3,6 +3,7 @@
 , texinfo, perl, gmp, mpfr, libmpc, gettext, which, patchelf, libelf
 , isl, zlib
 , buildPackages
+, gccNvptx, cudatoolkit
 }:
 
 with stdenv.lib;
@@ -114,7 +115,11 @@ stdenv.mkDerivation {
     langObjC = false;
     langObjCpp = false;
     langJit = false;
-  }) ++ [ "--disable-bootstrap" ];
+  }) ++ [
+    "--enable-offload-targets=nvptx-none=${gccNvptx}/nvptx-none"
+    "--with-cuda-driver-include=${cudatoolkit}/include"
+    "--with-cuda-driver-lib=${cudatoolkit}/lib"
+    ];
 
   targetConfig = if targetPlatform != hostPlatform then targetPlatform.config else null;
 
