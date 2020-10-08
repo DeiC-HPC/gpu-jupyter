@@ -1,9 +1,9 @@
 { gccTest, stdenv, wrapCC, overrideCC, gccStdenv, libstdcxx5 }:
 
-let myStdenv = overrideCC stdenv gccTest;
+let cc = wrapCC gccTest;
 in
 
-myStdenv.mkDerivation {
+stdenv.mkDerivation {
   name = "foo";
   src = ./foo.c;
 
@@ -11,6 +11,6 @@ myStdenv.mkDerivation {
 
   phases = [ "buildPhase" ];
   buildPhase = ''
-    g++ -O3 -fopenmp -fno-stack-protector -foffload=-lm -foffload="-misa=sm_35" -xc $src -o $out
+    ${cc}/bin/g++ -O3 -fopenmp -fno-stack-protector -foffload=-lm -foffload="-misa=sm_35" -xc $src -o $out
   '';
 }
