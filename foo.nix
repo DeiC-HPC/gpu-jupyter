@@ -1,8 +1,11 @@
-{ gccTest, stdenv }:
+{ gccTest, stdenv, wrapCC }:
+
+let cc = wrapCC gccTest;
+in
 
 stdenv.mkDerivation {
   phases = [ "buildPhase" ];
   buildPhase = ''
-    ${gccTest}/bin/gcc -o $out
+    ${cc}/bin/gcc -o $out
   '';
 }
