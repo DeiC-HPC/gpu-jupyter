@@ -117,8 +117,7 @@ stdenv.mkDerivation {
     langJit = false;
   }) ++ [
     "--enable-offload-targets=nvptx-none=${gccNvptx}/nvptx-none"
-    "--with-cuda-driver-include=${cudatoolkit}/include"
-    "--with-cuda-driver-lib=${cudatoolkit}/lib"
+    "--with-cuda-driver=${cudatoolkit}"
     ];
 
   targetConfig = if targetPlatform != hostPlatform then targetPlatform.config else null;
@@ -134,11 +133,9 @@ stdenv.mkDerivation {
   # compiler (after the specs for the cross-gcc are created). Having
   # LIBRARY_PATH= makes gcc read the specs from ., and the build breaks.
 
-  CPATH = optionals (targetPlatform == hostPlatform) (makeSearchPathOutput "dev" "include" ([]
-    ++ optional (zlib != null) zlib
-  ));
+  CPATH = optionals (targetPlatform == hostPlatform) (makeSearchPathOutput "dev" "include" [ zlib ]);
 
-  LIBRARY_PATH = optionals (targetPlatform == hostPlatform) (makeLibraryPath (optional (zlib != null) zlib));
+  LIBRARY_PATH = (optionals (targetPlatform == hostPlatform) (makeLibraryPath [ zlib ])) + ":${cudatoolkit}/lib/stubs";
 
   enableParallelBuilding = true;
   enableMultilib = false;

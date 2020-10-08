@@ -21,6 +21,9 @@
         gccTest = pkgs.callPackage ./gcc-test.nix {
           inherit nixpkgs gccNvptx;
         };
+        foo = pkgs.callPackage ./foo.nix {
+          inherit gccTest;
+        };
       };
     };
 }
