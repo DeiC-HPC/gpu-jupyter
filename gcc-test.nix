@@ -137,10 +137,5 @@ stdenv.mkDerivation {
   enableParallelBuilding = true;
   enableMultilib = false;
 
-  postFixup = ''
-    mkdir -p $out/nix-support
-    echo ' -B${gccNvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0 ' >> $out/nix-support/cc-cflags
-  '';
-
   inherit (stdenv) is64bit;
 }
