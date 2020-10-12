@@ -135,15 +135,15 @@ stdenv.mkDerivation {
 
   LIBRARY_PATH = (optionals (targetPlatform == hostPlatform) (makeLibraryPath [ zlib ])) + ":${cudatoolkit}/lib/stubs";
 
-  EXTRA_FLAGS_FOR_BUILD = [ "-B$lib/lib" ];
-  LDFLAGS = [
-    "-Wl,-rpath,$lib/lib"
-    "-Wl,-rpath-link,$lib/lib"
-  ];
-
   enableParallelBuilding = true;
   enableMultilib = false;
-  dontPatchELF = true;
+
+  postFixup = ''
+    # Fixing up libgomp
+    PREV_RPATH=`patchelf --print-rpath $lib/lib/libgomp.so.1`
+    NEW_RPATH=`echo "$PREV_RPATH:$lib/lib"`
+    patchelf --set-rpath "$NEW_RPATH" $lib/lib/libgomp.so.1 && echo OK
+  '';
 
   inherit (stdenv) is64bit;
 }
