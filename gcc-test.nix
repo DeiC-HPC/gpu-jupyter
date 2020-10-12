@@ -115,6 +115,7 @@ stdenv.mkDerivation {
   }) ++ [
     "--enable-offload-targets=nvptx-none=${gccNvptx}/nvptx-none"
     "--with-cuda-driver=${cudatoolkit}"
+    "--disable-bootstrap"
     ];
 
   targetConfig = if targetPlatform != hostPlatform then targetPlatform.config else null;
