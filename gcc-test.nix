@@ -34,7 +34,7 @@ stdenv.mkDerivation {
 
   outputs = [ "out" "man" "info" "lib" ];
   setOutputFlags = false;
-#  NIX_NO_SELF_RPATH = true;
+  NIX_NO_SELF_RPATH = false;
 
   libc_dev = stdenv.cc.libc_dev;
 
@@ -135,16 +135,11 @@ stdenv.mkDerivation {
 
   LIBRARY_PATH = (optionals (targetPlatform == hostPlatform) (makeLibraryPath [ zlib ])) + ":${cudatoolkit}/lib/stubs";
 
-  inherit
-    (import "${nixpkgs}/pkgs/development/compilers/gcc/common/extra-target-flags.nix" {
-      inherit stdenv;
-      libcCross = null;
-      crossStageStatic = false;
-      threadsCross = null;
-    })
-    EXTRA_FLAGS_FOR_TARGET
-    EXTRA_LDFLAGS_FOR_TARGET
-    ;
+  EXTRA_FLAGS_FOR_BUILD = [ "-B$lib/lib" ];
+  LDFLAGS = [
+    "-Wl,-rpath,$lib/lib"
+    "-Wl,-rpath-link,$lib/lib"
+  ];
 
   enableParallelBuilding = true;
   enableMultilib = false;
