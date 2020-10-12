@@ -1,2 +1,5 @@
 result
 result-gcc
+result-gcc-*
+a.out
+*.csv
