@@ -18,16 +18,13 @@
         gccNvptx = pkgs.callPackage ./gcc-nvptx.nix {
           inherit newlibSource nvptxTools;
         };
-        gccTest = pkgs.wrapCCWith {
-          cc = pkgs.callPackage ./gcc-test.nix {
+        gccOffloading = pkgs.wrapCCWith {
+          cc = pkgs.callPackage ./gcc-offloading.nix {
             inherit nixpkgs gccNvptx;
           };
           extraBuildCommands = ''
             echo '-B ${gccNvptx}/bin/ -B ${gccNvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/' >> $out/nix-support/cc-cflags
           '';
-        };
-        foo = pkgs.callPackage ./foo.nix {
-          inherit gccTest;
         };
       };
     };
