@@ -135,6 +135,17 @@ stdenv.mkDerivation {
 
   LIBRARY_PATH = (optionals (targetPlatform == hostPlatform) (makeLibraryPath [ zlib ])) + ":${cudatoolkit}/lib/stubs";
 
+  inherit
+    (import "${nixpkgs}/pkgs/development/compilers/gcc/common/extra-target-flags.nix" {
+      inherit stdenv;
+      libcCross = null;
+      crossStageStatic = false;
+      threadsCross = null;
+    })
+    EXTRA_FLAGS_FOR_TARGET
+    EXTRA_LDFLAGS_FOR_TARGET
+    ;
+
   enableParallelBuilding = true;
   enableMultilib = false;
 
