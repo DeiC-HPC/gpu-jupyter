@@ -143,6 +143,7 @@ stdenv.mkDerivation {
 
   enableParallelBuilding = true;
   enableMultilib = false;
+  dontPatchELF = true;
 
   inherit (stdenv) is64bit;
 }
