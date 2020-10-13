@@ -24,6 +24,8 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ texinfo which gettext perl gmp mpfr libmpc libelf ];
 
+  patches = [ ../sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff ];
+
   postPatch = ''
     configureScripts=$(find . -name configure)
     for configureScript in $configureScripts; do
@@ -42,6 +44,7 @@ stdenv.mkDerivation {
   '';
 
   configureFlags = [
+    "--disable-bootstrap"
     "--target=nvptx-none"
     "--enable-as-accelerator-for=x86_64-unknown-linux-gnu"
     "--with-build-time-tools=${nvptxTools}/nvptx-none/bin"
