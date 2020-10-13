@@ -1,17 +1,24 @@
-{ callPackage, stdenv, fetchurl, texinfo, which, gettext, perl, gmp, mpfr, libmpc, libelf, glibc, nvptxTools, newlibSource }:
-
-let majorVersion = "10";
-    version = "${majorVersion}.2.0";
+{ callPackage
+, stdenv
+, texinfo
+, which
+, gettext
+, perl
+, gmp
+, mpfr
+, libmpc
+, libelf
+, gccSource
+, newlibSource
+, nvptxTools
+}:
+let inherit (gccSource) version;
 in
-
 stdenv.mkDerivation {
-  pname = "gcc-nvptx";
-  inherit version;  
+  pname = "gcc${version}-nvptx";
+  inherit version;
 
-  src = fetchurl {
-    url = "mirror://gcc/releases/gcc-${version}/gcc-${version}.tar.xz";
-    sha256 = "130xdkhmz1bc2kzx061s3sfwk36xah1fw5w332c0nzwwpdl47pdq";
-  };
+  src = gccSource;
 
   hardeningDisable = [ "format" "pie" ];
 

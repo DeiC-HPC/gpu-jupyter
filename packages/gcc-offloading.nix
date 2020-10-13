@@ -1,34 +1,40 @@
 { nixpkgs
-, stdenv, targetPackages, fetchurl, fetchpatch
-, texinfo, perl, gmp, mpfr, libmpc, gettext, which, patchelf, libelf
-, isl, zlib
+, stdenv
+, targetPackages
+, texinfo
+, perl
+, gmp
+, mpfr
+, libmpc
+, gettext
+, which
+, patchelf
+, libelf
+, isl
+, zlib
 , buildPackages
-, gccNvptx, cudatoolkit
+, gccSource
+, gccNvptx
+, cudatoolkit
 }:
 
 with stdenv.lib;
 with builtins;
+let
+  inherit (gccSource) version;
+  inherit (stdenv) buildPlatform hostPlatform targetPlatform;
 
-let majorVersion = "10";
-    version = "${majorVersion}.2.0";
-
-    inherit (stdenv) buildPlatform hostPlatform targetPlatform;
-
-    patches =
-         optional (targetPlatform != hostPlatform) "${nixpkgs}/pkgs/development/compilers/gcc/libstdc++-target.patch"
-      ++ [ "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch" ];
+  patches =
+    optional (targetPlatform != hostPlatform) "${nixpkgs}/pkgs/development/compilers/gcc/libstdc++-target.patch"
+    ++ [ "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch" ];
 in
-
 stdenv.mkDerivation {
-  pname = "gcc-offload";
+  pname = "gcc${version}-offload";
   inherit version;
 
   builder = "${nixpkgs}/pkgs/development/compilers/gcc/builder.sh";
 
-  src = fetchurl {
-    url = "mirror://gcc/releases/gcc-${version}/gcc-${version}.tar.xz";
-    sha256 = "130xdkhmz1bc2kzx061s3sfwk36xah1fw5w332c0nzwwpdl47pdq";
-  };
+  src = gccSource;
 
   inherit patches;
 
@@ -47,12 +53,12 @@ stdenv.mkDerivation {
     done
   '' + (
     if targetPlatform != hostPlatform || stdenv.cc.libc != null then
-      # On NixOS, use the right path to the dynamic linker instead of
-      # `/lib/ld*.so'.
+    # On NixOS, use the right path to the dynamic linker instead of
+    # `/lib/ld*.so'.
       let
         libc = stdenv.cc.libc;
       in
-        (
+      (
         '' echo "fixing the \`GLIBC_DYNAMIC_LINKER', \`UCLIBC_DYNAMIC_LINKER', and \`MUSL_DYNAMIC_LINKER' macros..."
            for header in "gcc/config/"*-gnu.h "gcc/config/"*"/"*.h
            do
@@ -63,8 +69,9 @@ stdenv.mkDerivation {
                  -e 's|define[[:blank:]]*MUSL_DYNAMIC_LINKER\([0-9]*\)[[:blank:]]"\([^\"]\+\)"$|define MUSL_DYNAMIC_LINKER\1 "${libc.out}\2"|g'
            done
         ''
-        )
-    else "");
+      )
+    else ""
+  );
 
   crossStageStatic = false;
   staticCompiler = false;
@@ -79,14 +86,18 @@ stdenv.mkDerivation {
     (
       if hostPlatform == buildPlatform then [
         targetPackages.stdenv.cc.bintools # newly-built gcc will be used
-      ] else assert targetPlatform == hostPlatform; [ # build != host == target
+      ] else assert targetPlatform == hostPlatform; [
+        # build != host == target
         stdenv.cc
       ]
     )
     ++ [ patchelf ];
 
   buildInputs = [
-    gmp mpfr libmpc libelf
+    gmp
+    mpfr
+    libmpc
+    libelf
     targetPackages.stdenv.cc.bintools # For linking code at run-time
     isl
     zlib
@@ -116,7 +127,7 @@ stdenv.mkDerivation {
     "--enable-offload-targets=nvptx-none=${gccNvptx}/nvptx-none"
     "--with-cuda-driver=${cudatoolkit}"
     "--disable-bootstrap"
-    ];
+  ];
 
   targetConfig = if targetPlatform != hostPlatform then targetPlatform.config else null;
 
