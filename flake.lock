@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "jupyterWith": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1601621858,
+        "narHash": "sha256-VZIYTdKYHvOJ2EX8LtQ2yt1mukjWz6vw2nTTBXS+95c=",
+        "owner": "tweag",
+        "repo": "jupyterWith",
+        "rev": "35eb565c6d00f3c61ef5e74e7e41870cfa3926f7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tweag",
+        "repo": "jupyterWith",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1601171649,
@@ -18,6 +34,7 @@
     },
     "root": {
       "inputs": {
+        "jupyterWith": "jupyterWith",
         "nixpkgs": "nixpkgs"
       }
     }
