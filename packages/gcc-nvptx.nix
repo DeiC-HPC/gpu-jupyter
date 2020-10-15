@@ -50,7 +50,7 @@ stdenv.mkDerivation {
     "--with-build-time-tools=${nvptxTools}/nvptx-none/bin"
     "--disable-sjlj-exceptions"
     "--enable-newlib-io-long-long"
-    "--enable-languages=c,c++,lto"
+    "--enable-languages=c,c++,fortran,lto"
   ];
 
   postInstall = ''

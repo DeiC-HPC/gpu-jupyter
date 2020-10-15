@@ -120,7 +120,7 @@ stdenv.mkDerivation {
     enableLTO = true;
     langC = true;
     langCC = true;
-    langFortran = false;
+    langFortran = true;
     langAda = false;
     langGo = false;
     langObjC = false;
