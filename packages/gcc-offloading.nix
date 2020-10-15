@@ -160,4 +160,16 @@ stdenv.mkDerivation {
   '';
 
   inherit (stdenv) is64bit;
+
+  passthru = {
+    langC = true;
+    langCC = true;
+    langFortran = true;
+    langObjC = false;
+    langObjCpp = false;
+    langAda = false;
+    langGo = false;
+    inherit version;
+    isGNU = true;
+  };
 }
