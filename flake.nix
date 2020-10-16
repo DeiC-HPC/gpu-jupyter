@@ -45,20 +45,18 @@
         jupyter_c_kernel = pkgs.callPackage ./packages/jupyter-c-kernel.nix {
           gccOffload = gcc10Offloading;
         };
-        python3Test = pkgs.python3.override {
-          packageOverrides = python-self: python-super: {
-            jupyter_c_kernel = jupyter_c_kernel.override {
-              python3Packages = python-super;
-            };
-          };
+        jupyter_cpp_kernel = pkgs.callPackage ./packages/jupyter-cpp-kernel.nix {
+          gccOffload = gcc10Offloading;
         };
-        jupyter = (jupyterWith.jupyterlabWith {
-          kernels = [
-            (jupyterWith.kernels.cKernelWith {
-              python3 = python3Test;
-            })
-          ];
-        });
+        jupyter_fortran_kernel = pkgs.callPackage ./packages/jupyter-fortran-kernel.nix {
+          gccOffload = gcc10Offloading;
+        };
+        kernels = pkgs.callPackage ./packages/kernels.nix {
+          inherit jupyter_c_kernel jupyter_cpp_kernel jupyter_fortran_kernel;
+        };
+        jupyter = jupyterWith.jupyterlabWith {
+          inherit kernels;
+        };
       };
     };
 }
