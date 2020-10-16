@@ -20,7 +20,7 @@ let
          magics = self._filter_magics(code)
 
 -        with self.new_temp_file(suffix='.c') as source_file:
-+        with self.new_temp_file(suffix='.f') as source_file:
++        with self.new_temp_file(suffix='.f90') as source_file:
              source_file.write(code)
              source_file.flush()
              with self.new_temp_file(suffix='.out') as binary_file:
