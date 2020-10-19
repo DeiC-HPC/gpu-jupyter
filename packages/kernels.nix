@@ -1,14 +1,23 @@
-{ stdenv
+{ lib
+, stdenv
 , python3
 , pkgs
-, jupyter_c_kernel
-, jupyter_cpp_kernel
-, jupyter_fortran_kernel
+, jupyter_generic_kernel
 }:
-
 let
-  kernelMaker = name: pkg: language: logo:
+  kernelMaker =
+    { flags
+    , compilerName
+    , languageName
+    , fileExtension
+    , name
+    , displayName
+    , logo
+    }:
     let
+      pkg = jupyter_generic_kernel {
+        inherit flags compilerName languageName fileExtension;
+      };
       kernelEnv = python3.withPackages (python3Packages:
         [
           (pkg.override { inherit python3Packages; })
@@ -23,8 +32,8 @@ let
           "-f"
           "{connection_file}"
         ];
-        display_name = name;
-        inherit language;
+        display_name = displayName;
+        language = lib.strings.toLower languageName;
         logo64 = "logo-64x64.png";
       };
 
@@ -32,21 +41,37 @@ let
         inherit name;
         phases = "installPhase";
         src = logo;
-        buildInputs = [];
+        buildInputs = [ ];
         installPhase = ''
-          mkdir -p $out/kernels/c_${name}
-          cp $src $out/kernels/c_${name}/logo-64x64.png
-          echo '${builtins.toJSON kernelFile}' > $out/kernels/c_${name}/kernel.json
+          mkdir -p $out/kernels/kernel_${name}
+          cp $src $out/kernels/kernel_${name}/logo-64x64.png
+          echo '${builtins.toJSON kernelFile}' > $out/kernels/kernel_${name}/kernel.json
         '';
       };
     in
-      {
-        spec = kernel;
-        runtimePackages = [];
-      };
+    {
+      spec = kernel;
+      runtimePackages = [ ];
+    };
+
+
+  cpp_openmp_kernel = kernelMaker {
+    flags = [ "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    compilerName = "g++";
+    languageName = "C++";
+    fileExtension = "cpp";
+    name = "cpp_openmp";
+    displayName = "C++ with OpenMP";
+    logo = ../logos/cpp.png;
+  };
+  fortran_openmp_kernel = kernelMaker {
+    flags = [ "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    compilerName = "gfortran";
+    languageName = "Fortran";
+    fileExtension = "f90";
+    name = "fortran_openmp";
+    displayName = "Fortran with OpenMP";
+    logo = ../logos/fortran.png;
+  };
 in
-  [
-    (kernelMaker "c-kernel" jupyter_c_kernel "c" ./c.png)
-    (kernelMaker "cpp-kernel" jupyter_cpp_kernel "c++" ./c.png)
-    (kernelMaker "fortran-kernel" jupyter_fortran_kernel "fortran" ./c.png)
-  ]
+[ cpp_openmp_kernel fortran_openmp_kernel ]

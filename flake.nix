@@ -42,17 +42,11 @@
             echo '-B ${gcc10Nvptx}/bin/ -B ${gcc10Nvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/' >> $out/nix-support/cc-cflags
           '';
         };
-        jupyter_c_kernel = pkgs.callPackage ./packages/jupyter-c-kernel.nix {
+        jupyter_generic_kernel = args: pkgs.callPackage ./packages/jupyter-generic-kernel.nix ({
           gccOffload = gcc10Offloading;
-        };
-        jupyter_cpp_kernel = pkgs.callPackage ./packages/jupyter-cpp-kernel.nix {
-          gccOffload = gcc10Offloading;
-        };
-        jupyter_fortran_kernel = pkgs.callPackage ./packages/jupyter-fortran-kernel.nix {
-          gccOffload = gcc10Offloading;
-        };
+        } // args);
         kernels = pkgs.callPackage ./packages/kernels.nix {
-          inherit jupyter_c_kernel jupyter_cpp_kernel jupyter_fortran_kernel;
+          inherit jupyter_generic_kernel;
         };
         jupyter = jupyterWith.jupyterlabWith {
           inherit kernels;
