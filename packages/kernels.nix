@@ -64,6 +64,15 @@ let
     displayName = "C++ with OpenMP";
     logo = ../logos/cpp.png;
   };
+  cpp_openacc_kernel = kernelMaker {
+    flags = [ "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    compilerName = "g++";
+    languageName = "C++";
+    fileExtension = "cpp";
+    name = "cpp_openacc";
+    displayName = "C++ with OpenACC";
+    logo = ../logos/cpp.png;
+  };
   fortran_openmp_kernel = kernelMaker {
     flags = [ "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     compilerName = "gfortran";
@@ -73,14 +82,14 @@ let
     displayName = "Fortran with OpenMP";
     logo = ../logos/fortran.png;
   };
-  cpp_openacc_kernel = kernelMaker {
-    flags = [ "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    compilerName = "g++";
-    languageName = "C++";
-    fileExtension = "cpp";
-    name = "cpp_openacc";
-    displayName = "C++ with OpenACC";
-    logo = ../logos/cpp.png;
+  fortran_openacc_kernel = kernelMaker {
+    flags = [ "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    compilerName = "gfortran";
+    languageName = "Fortran";
+    fileExtension = "f90";
+    name = "fortran_openmp";
+    displayName = "Fortran with OpenMP";
+    logo = ../logos/fortran.png;
   };
 in
 [ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel ]

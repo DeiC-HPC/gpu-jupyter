@@ -48,8 +48,10 @@
         kernels = pkgs.callPackage ./packages/kernels.nix {
           inherit jupyter_generic_kernel;
         };
-        jupyter = jupyterWith.jupyterlabWith {
-          inherit kernels;
+        jupyter = pkgs.callPackage ./packages/jupyter.nix {
+          jupyter = jupyterWith.jupyterlabWith {
+            inherit kernels;
+          };
         };
       };
     };
