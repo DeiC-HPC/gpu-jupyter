@@ -1,5 +1,6 @@
 result
-result-gcc
+result-*
 result-gcc-*
 a.out
 *.csv
+*.ipynb
