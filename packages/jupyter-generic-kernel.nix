@@ -12,7 +12,7 @@ let
   patch = writeText "jupyter-c-kernel-patch" ''
     --- a/jupyter_c_kernel/kernel.py  2020-10-16 15:23:04.159843942 +0200
     +++ b/jupyter_c_kernel/kernel.py  2020-10-16 15:26:08.955834015 +0200
-    @@ -113,8 +113,8 @@
+    @@ -113,8 +113,9 @@
                                        lambda contents: self._write_to_stderr(contents.decode()))
 
          def compile_with_gcc(self, source_filename, binary_filename, cflags=None, ldflags=None):
@@ -20,6 +20,7 @@ let
     -        args = ['gcc', source_filename] + cflags + ['-o', binary_filename] + ldflags
     +        cflags = ['-fPIC', '-shared', '-rdynamic', ${fixedFlags}] + cflags
     +        args = ['${gccOffload}/bin/${compilerName}', source_filename] + cflags + ['-o', binary_filename] + ldflags
+    +        self._write_to_stderr("[${languageName} kernel] Arguments: {}".format(args))
              return self.create_jupyter_subprocess(args)
 
          def _filter_magics(self, code):
