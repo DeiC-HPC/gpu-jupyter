@@ -92,4 +92,4 @@ let
     logo = ../logos/fortran.png;
   };
 in
-[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel ]
+[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel ]
