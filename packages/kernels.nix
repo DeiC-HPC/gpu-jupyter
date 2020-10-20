@@ -87,8 +87,8 @@ let
     compilerName = "gfortran";
     languageName = "Fortran";
     fileExtension = "f90";
-    name = "fortran_openmp";
-    displayName = "Fortran with OpenMP";
+    name = "fortran_openacc";
+    displayName = "Fortran with OpenACC";
     logo = ../logos/fortran.png;
   };
 in
