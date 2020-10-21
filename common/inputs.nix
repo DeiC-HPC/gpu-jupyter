@@ -8,7 +8,9 @@ let
   jupyterWithSrc = args.jupyterWith or defaultJupyterWithSrc;
 in rec {
   system = "x86_64-linux";
-  nixpkgs = args.nixpkgs or <nixpkgs>;
+  nixpkgs = args.nixpkgs or builtins.fetchTarball {
+    url = "https://nixos.org/channels/nixos-20.09/nixexprs.tar.xz";
+  };
   pkgs = args.pkgs or (import nixpkgs {
     inherit system;
     config.allowUnfree = true;
