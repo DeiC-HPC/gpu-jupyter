@@ -10,8 +10,9 @@
 let
   fixedFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") flags;
   patch = writeText "jupyter-c-kernel-patch" ''
-    --- a/jupyter_c_kernel/kernel.py  2020-10-16 15:23:04.159843942 +0200
-    +++ b/jupyter_c_kernel/kernel.py  2020-10-16 15:26:08.955834015 +0200
+    diff -Naur jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py
+    --- jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py	2018-01-24 11:05:46.000000000 +0100
+    +++ jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py	2020-10-21 14:17:40.263115218 +0200
     @@ -113,8 +113,8 @@
                                        lambda contents: self._write_to_stderr(contents.decode()))
 
@@ -50,6 +51,18 @@ let
              return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [], 'user_expressions': {}}
 
          def do_shutdown(self, restart):
+    diff -Naur jupyter_c_kernel-1.2.2/jupyter_c_kernel/resources/master.c jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/resources/master.c
+    --- jupyter_c_kernel-1.2.2/jupyter_c_kernel/resources/master.c	2018-01-24 11:05:46.000000000 +0100
+    +++ jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/resources/master.c	2020-10-21 14:26:04.417127231 +0200
+    @@ -8,6 +8,8 @@
+     {
+         char *error = NULL;
+
+    +    setenv("LD_LIBRARY_PATH", "${gccOffload.cc}/lib:/usr/lib/x86_64-linux-gnu/", 1);
+    +
+         setbuf(stdout, NULL);
+         setbuf(stderr, NULL);
+         if (argc < 2) {
   '';
 in
 python3Packages.jupyter-c-kernel.overrideAttrs (attrs: {
