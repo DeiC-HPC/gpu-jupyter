@@ -1,18 +1,6 @@
-{ nixpkgs ? <nixpkgs>
-, pkgs ? import nixpkgs { allowUnfree = true; }
-, jupyterWithSrc ? (builtins.fetchGit {
-    url = https://github.com/tweag/jupyterWith;
-    rev = "35eb565c6d00f3c61ef5e74e7e41870cfa3926f7";
-  })
-, jupyterWith ? import jupyterWithSrc {
-    pkgs = import nixpkgs {
-      config.allowUnfree = true;
-      overlays = [
-        (import "${jupyterWithSrc}/nix/haskell-overlay.nix")
-        (import "${jupyterWithSrc}/nix/python-overlay.nix")
-      ];
-    };
-  }
+{ nixpkgs
+, pkgs
+, jupyterWith
 }:
 
 rec {

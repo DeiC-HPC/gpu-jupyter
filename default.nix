@@ -6,5 +6,6 @@ with (import ./common/outputs.nix {
 });
 
 pkgs.symlinkJoin {
-  inputs = [ jupyter gcc10Offloading ];
+  name = "jupyter";
+  paths = [ jupyter gcc10Offloading ];
 }
