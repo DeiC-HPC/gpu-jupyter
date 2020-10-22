@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    jupyterWith = { url = "github:tweag/jupyterWith"; flake = false; };
+    jupyterWith = { url = "github:TethysSvensson/jupyterWith"; flake = false; };
   };
 
   outputs = inputs:

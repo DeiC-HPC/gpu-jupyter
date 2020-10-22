@@ -3,15 +3,15 @@
     "jupyterWith": {
       "flake": false,
       "locked": {
-        "lastModified": 1601621858,
-        "narHash": "sha256-VZIYTdKYHvOJ2EX8LtQ2yt1mukjWz6vw2nTTBXS+95c=",
-        "owner": "tweag",
+        "lastModified": 1603365529,
+        "narHash": "sha256-s/G12sE6euRAHLA1tn0yIicE6P+PMChJa1q2cPievxo=",
+        "owner": "TethysSvensson",
         "repo": "jupyterWith",
-        "rev": "35eb565c6d00f3c61ef5e74e7e41870cfa3926f7",
+        "rev": "daad81179fc8b58ea7f4ab036ba0a4db0fdfdf57",
         "type": "github"
       },
       "original": {
-        "owner": "tweag",
+        "owner": "TethysSvensson",
         "repo": "jupyterWith",
         "type": "github"
       }

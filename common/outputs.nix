@@ -30,6 +30,11 @@ rec {
   jupyter = pkgs.callPackage ../packages/jupyter.nix {
     jupyter = jupyterWith.jupyterlabWith {
       inherit kernels;
+      directory = jupyterWith.mkDirectoryFromLockFile {
+        yarnlock = ../packages/jupyter-lockfiles/yarn.lock;
+        packagefile = ../packages/jupyter-lockfiles/package.json;
+        sha256 = "0d9sxj6l2vzk0ffvaxw0qr0c194q2b7yk0kr93f854naiwqrgm43";
+      };
     };
   };
 }
