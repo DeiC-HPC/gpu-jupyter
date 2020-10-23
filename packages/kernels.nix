@@ -5,6 +5,7 @@
 , jupyter_generic_kernel
 , gcc10Offloading
 , linuxPackages
+, cudatoolkit
 }:
 let
   kernelMaker =
@@ -61,7 +62,7 @@ let
 
   cpp_openmp_kernel = kernelMaker {
     targetCompiler = "${gcc10Offloading}/bin/g++";
-    targetFlags = [ "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
     ldPrefix = "${gcc10Offloading.cc}/lib";
@@ -72,7 +73,7 @@ let
   };
   cpp_openacc_kernel = kernelMaker {
     targetCompiler = "${gcc10Offloading}/bin/g++";
-    targetFlags = [ "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
     ldPrefix = "${gcc10Offloading.cc}/lib";
@@ -83,7 +84,7 @@ let
   };
   fortran_openmp_kernel = kernelMaker {
     targetCompiler = "${gcc10Offloading}/bin/gfortran";
-    targetFlags = [ "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
     ldPrefix = "${gcc10Offloading.cc}/lib";
@@ -94,7 +95,7 @@ let
   };
   fortran_openacc_kernel = kernelMaker {
     targetCompiler = "${gcc10Offloading}/bin/gfortran";
-    targetFlags = [ "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
     ldPrefix = "${gcc10Offloading.cc}/lib";
@@ -103,5 +104,16 @@ let
     displayName = "Fortran with OpenACC";
     logo = ../logos/fortran.png;
   };
+  nvcc_kernel = kernelMaker {
+    targetCompiler = "${cudatoolkit}/bin/nvcc";
+    targetFlags = [ "--compiler-options" "-fPIC" "-shared" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" ];
+    languageName = "Cuda";
+    fileExtension = "cu";
+    ldPrefix = "${cudatoolkit.lib}/lib";
+    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
+    name = "cuda";
+    displayName = "Cuda compiler";
+    logo = ../logos/cuda.png;
+  };
 in
-[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel ]
+[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel nvcc_kernel ]

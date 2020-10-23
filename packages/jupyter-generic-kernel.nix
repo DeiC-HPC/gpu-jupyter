@@ -57,7 +57,7 @@ let
          def compile_with_gcc(self, source_filename, binary_filename, cflags=None, ldflags=None):
     -        cflags = ['-std=c11', '-fPIC', '-shared', '-rdynamic'] + cflags
     -        args = ['gcc', source_filename] + cflags + ['-o', binary_filename] + ldflags
-    +        cflags = ['-fPIC', '-shared', '-rdynamic', ${fixedTargetFlags}] + cflags
+    +        cflags = [${fixedTargetFlags}] + cflags
     +        args = ['${targetCompiler}', source_filename] + cflags + ['-o', binary_filename] + ldflags
              return self.create_jupyter_subprocess(args)
 
