@@ -3,6 +3,11 @@
 , jupyterWith
 }:
 
+let 
+  # arguments deliberately left out
+  jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
+in
+
 rec {
   newlibSource = pkgs.callPackage ../sources/newlib.nix { };
   gcc10Source = pkgs.callPackage ../sources/gcc10.nix { };
@@ -21,11 +26,8 @@ rec {
       echo '-B ${gcc10Nvptx}/bin/ -B ${gcc10Nvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/' >> $out/nix-support/cc-cflags
     '';
   };
-  jupyter_generic_kernel = args: pkgs.callPackage ../packages/jupyter-generic-kernel.nix ({
-    gccOffload = gcc10Offloading;
-  } // args);
   kernels = pkgs.callPackage ../packages/kernels.nix {
-    inherit jupyter_generic_kernel;
+    inherit gcc10Offloading jupyter_generic_kernel;
   };
   jupyter = pkgs.callPackage ../packages/jupyter.nix {
     jupyter = jupyterWith.jupyterlabWith {

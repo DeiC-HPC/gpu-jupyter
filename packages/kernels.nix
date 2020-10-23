@@ -3,20 +3,22 @@
 , python3
 , pkgs
 , jupyter_generic_kernel
+, gcc10Offloading
 }:
 let
   kernelMaker =
-    { flags
-    , compilerName
+    { targetCompiler
+    , targetFlags
     , languageName
     , fileExtension
+    , extraLdFlags ? ""
     , name
     , displayName
     , logo
     }:
     let
       pkg = jupyter_generic_kernel {
-        inherit flags compilerName languageName fileExtension;
+        inherit targetCompiler targetFlags languageName fileExtension extraLdFlags;
       };
       kernelEnv = python3.withPackages (python3Packages:
         [
@@ -56,37 +58,41 @@ let
 
 
   cpp_openmp_kernel = kernelMaker {
-    flags = [ "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    compilerName = "g++";
+    targetCompiler = "${gcc10Offloading}/bin/g++";
+    targetFlags = [ "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
+    extraLdFlags = "${gcc10Offloading.cc}/lib";
     name = "cpp_openmp";
     displayName = "C++ with OpenMP";
     logo = ../logos/cpp.png;
   };
   cpp_openacc_kernel = kernelMaker {
-    flags = [ "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    compilerName = "g++";
+    targetCompiler = "${gcc10Offloading}/bin/g++";
+    targetFlags = [ "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
+    extraLdFlags = "${gcc10Offloading.cc}/lib";
     name = "cpp_openacc";
     displayName = "C++ with OpenACC";
     logo = ../logos/cpp.png;
   };
   fortran_openmp_kernel = kernelMaker {
-    flags = [ "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    compilerName = "gfortran";
+    targetCompiler = "${gcc10Offloading}/bin/gfortran";
+    targetFlags = [ "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
+    extraLdFlags = "${gcc10Offloading.cc}/lib";
     name = "fortran_openmp";
     displayName = "Fortran with OpenMP";
     logo = ../logos/fortran.png;
   };
   fortran_openacc_kernel = kernelMaker {
-    flags = [ "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    compilerName = "gfortran";
+    targetCompiler = "${gcc10Offloading}/bin/gfortran";
+    targetFlags = [ "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
+    extraLdFlags = "${gcc10Offloading.cc}/lib";
     name = "fortran_openacc";
     displayName = "Fortran with OpenACC";
     logo = ../logos/fortran.png;

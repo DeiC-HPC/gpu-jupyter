@@ -1,14 +1,15 @@
 { lib
 , python3Packages
-, gccOffload
 , writeText
-, flags
-, compilerName
+, gcc
+, targetCompiler
+, targetFlags
 , languageName
 , fileExtension
+, extraLdFlags ? ""
 }:
 let
-  fixedFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") flags;
+  fixedTargetFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") targetFlags;
   patch = writeText "jupyter-c-kernel-patch" ''
     diff -Naur jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py
     --- jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py	2018-01-24 11:05:46.000000000 +0100
@@ -31,6 +32,15 @@ let
 
              self._stdout_queue = Queue()
              self._stdout_thread = Thread(target=RealTimeSubprocess._enqueue_output, args=(self.stdout, self._stdout_queue))
+    @@ -84,7 +84,7 @@
+             os.close(mastertemp[0])
+             self.master_path = mastertemp[1]
+             filepath = path.join(path.dirname(path.realpath(__file__)), 'resources', 'master.c')
+    -        subprocess.call(['gcc', filepath, '-std=c11', '-rdynamic', '-ldl', '-o', self.master_path])
+    +        subprocess.call(['${gcc}/bin/gcc', filepath, '-std=c11', '-rdynamic', '-ldl', '-o', self.master_path])
+
+         def cleanup_files(self):
+             """Remove all the temporary files created by the kernel"""
     @@ -107,14 +107,15 @@
          def _write_to_stderr(self, contents):
              self.send_response(self.iopub_socket, 'stream', {'name': 'stderr', 'text': contents})
@@ -46,8 +56,8 @@ let
          def compile_with_gcc(self, source_filename, binary_filename, cflags=None, ldflags=None):
     -        cflags = ['-std=c11', '-fPIC', '-shared', '-rdynamic'] + cflags
     -        args = ['gcc', source_filename] + cflags + ['-o', binary_filename] + ldflags
-    +        cflags = ['-fPIC', '-shared', '-rdynamic', ${fixedFlags}] + cflags
-    +        args = ['${gccOffload}/bin/${compilerName}', source_filename] + cflags + ['-o', binary_filename] + ldflags
+    +        cflags = ['-fPIC', '-shared', '-rdynamic', ${fixedTargetFlags}] + cflags
+    +        args = ['${targetCompiler}', source_filename] + cflags + ['-o', binary_filename] + ldflags
              return self.create_jupyter_subprocess(args)
 
          def _filter_magics(self, code):
@@ -60,19 +70,25 @@ let
                  source_file.write(code)
                  source_file.flush()
                  with self.new_temp_file(suffix='.out') as binary_file:
-    @@ -153,18 +154,20 @@
+    @@ -153,18 +154,26 @@
                      p.write_contents()
                      if p.returncode != 0:  # Compilation failed
                          self._write_to_stderr(
     -                            "[C kernel] GCC exited with code {}, the executable will not be executed".format(
-    +                            "[${languageName} kernel] ${compilerName} exited with code {}, the executable will not be executed".format(
+    +                            "[${languageName} kernel] Compiler exited with code {}, the executable will not be executed".format(
                                          p.returncode))
                          return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
                                  'user_expressions': {}}
 
     -        p = self.create_jupyter_subprocess([self.master_path, binary_file.name] + magics['args'])
     +        my_env = os.environ.copy()
-    +        my_env["LD_LIBRARY_PATH"] = "${gccOffload.cc}/lib:/usr/lib/x86_64-linux-gnu/"
+    +        extra_ld_flags = "${extraLdFlags}"
+    +        if extra_ld_flags:
+    +            saved = my_env.pop("LD_LIBRARY_PATH", "")
+    +            my_env["LD_LIBRARY_PATH"] = extra_ld_flags
+    +            if saved:
+    +                my_env["LD_LIBRARY_PATH"] += ":" + saved
+    +
     +        p = self.create_jupyter_subprocess([self.master_path, binary_file.name] + magics['args'], env = my_env)
              while p.poll() is None:
                  p.write_contents()
@@ -88,8 +104,4 @@ let
 in
 python3Packages.jupyter-c-kernel.overrideAttrs (attrs: {
   patches = [ patch ];
-  postPatch = ''
-    substituteInPlace jupyter_c_kernel/kernel.py \
-      --replace "'gcc'" "'${gccOffload}/bin/gcc'"
-  '';
 })
