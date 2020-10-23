@@ -6,7 +6,8 @@
 , targetFlags
 , languageName
 , fileExtension
-, extraLdFlags ? ""
+, ldPrefix ? ""
+, ldSuffix ? ""
 }:
 let
   fixedTargetFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") targetFlags;
@@ -70,7 +71,7 @@ let
                  source_file.write(code)
                  source_file.flush()
                  with self.new_temp_file(suffix='.out') as binary_file:
-    @@ -153,18 +154,26 @@
+    @@ -153,18 +154,24 @@
                      p.write_contents()
                      if p.returncode != 0:  # Compilation failed
                          self._write_to_stderr(
@@ -82,12 +83,10 @@ let
 
     -        p = self.create_jupyter_subprocess([self.master_path, binary_file.name] + magics['args'])
     +        my_env = os.environ.copy()
-    +        extra_ld_flags = "${extraLdFlags}"
-    +        if extra_ld_flags:
-    +            saved = my_env.pop("LD_LIBRARY_PATH", "")
-    +            my_env["LD_LIBRARY_PATH"] = extra_ld_flags
-    +            if saved:
-    +                my_env["LD_LIBRARY_PATH"] += ":" + saved
+    +        ld_library_path = ["${ldPrefix}", my_env.get("LD_LIBRARY_PATH", ""), "${ldSuffix}"]
+    +        ld_library_path = ':'.join(part for part in ld_library_path if path)
+    +        if ld_library_path:
+    +            my_env['LD_LIBRARY_PATH'] = ld_library_path
     +
     +        p = self.create_jupyter_subprocess([self.master_path, binary_file.name] + magics['args'], env = my_env)
              while p.poll() is None:

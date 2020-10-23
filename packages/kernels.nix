@@ -4,6 +4,7 @@
 , pkgs
 , jupyter_generic_kernel
 , gcc10Offloading
+, linuxPackages
 }:
 let
   kernelMaker =
@@ -11,14 +12,15 @@ let
     , targetFlags
     , languageName
     , fileExtension
-    , extraLdFlags ? ""
+    , ldPrefix ? ""
+    , ldSuffix ? ""
     , name
     , displayName
     , logo
     }:
     let
       pkg = jupyter_generic_kernel {
-        inherit targetCompiler targetFlags languageName fileExtension extraLdFlags;
+        inherit targetCompiler targetFlags languageName fileExtension ldPrefix ldSuffix;
       };
       kernelEnv = python3.withPackages (python3Packages:
         [
@@ -62,7 +64,8 @@ let
     targetFlags = [ "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
-    extraLdFlags = "${gcc10Offloading.cc}/lib";
+    ldPrefix = "${gcc10Offloading.cc}/lib";
+    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cpp_openmp";
     displayName = "C++ with OpenMP";
     logo = ../logos/cpp.png;
@@ -72,7 +75,8 @@ let
     targetFlags = [ "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
-    extraLdFlags = "${gcc10Offloading.cc}/lib";
+    ldPrefix = "${gcc10Offloading.cc}/lib";
+    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cpp_openacc";
     displayName = "C++ with OpenACC";
     logo = ../logos/cpp.png;
@@ -82,7 +86,8 @@ let
     targetFlags = [ "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
-    extraLdFlags = "${gcc10Offloading.cc}/lib";
+    ldPrefix = "${gcc10Offloading.cc}/lib";
+    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "fortran_openmp";
     displayName = "Fortran with OpenMP";
     logo = ../logos/fortran.png;
@@ -92,7 +97,8 @@ let
     targetFlags = [ "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
-    extraLdFlags = "${gcc10Offloading.cc}/lib";
+    ldPrefix = "${gcc10Offloading.cc}/lib";
+    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "fortran_openacc";
     displayName = "Fortran with OpenACC";
     logo = ../logos/fortran.png;
