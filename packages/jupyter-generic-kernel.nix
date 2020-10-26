@@ -83,7 +83,7 @@ let
 
     -        p = self.create_jupyter_subprocess([self.master_path, binary_file.name] + magics['args'])
     +        my_env = os.environ.copy()
-    +        ld_library_path = ["${ldPrefix}", my_env.get("LD_LIBRARY_PATH", ""), "${ldSuffix}"]
+    +        ld_library_path = ["${ldPrefix}", my_env.get("TARGET_LD_LIBRARY_PATH", ""), my_env.get("LD_LIBRARY_PATH", ""), "${ldSuffix}"]
     +        ld_library_path = ':'.join(part for part in ld_library_path if path)
     +        if ld_library_path:
     +            my_env['LD_LIBRARY_PATH'] = ld_library_path
