@@ -21,6 +21,16 @@ rec {
     inherit newlibSource nvptxTools;
     gccSource = gcc10-2-source;
   };
+  gcc10-1-offloading = pkgs.wrapCCWith {
+    cc = pkgs.callPackage ../packages/gcc-offloading.nix {
+      inherit nixpkgs;
+      gccNvptx = gcc10-1-nvptx;
+      gccSource = gcc10-1-source;
+    };
+    extraBuildCommands = ''
+      echo '-B ${gcc10-1-nvptx}/bin/ -B ${gcc10-1-nvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.1.0/' >> $out/nix-support/cc-cflags
+    '';
+  };
   gcc10-2-offloading = pkgs.wrapCCWith {
     cc = pkgs.callPackage ../packages/gcc-offloading.nix {
       inherit nixpkgs;
