@@ -62,7 +62,7 @@ let
 
   cpp_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-I." "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
@@ -73,7 +73,7 @@ let
   };
   cpp_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-I." "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
@@ -84,7 +84,7 @@ let
   };
   fortran_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-I." "-fPIC" "-shared" "-rdynamic" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
@@ -95,7 +95,7 @@ let
   };
   fortran_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-I." "-fPIC" "-shared" "-rdynamic" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
@@ -106,7 +106,7 @@ let
   };
   nvcc_kernel = kernelMaker {
     targetCompiler = "${cudatoolkit}/bin/nvcc";
-    targetFlags = [ "--compiler-options" "-fPIC" "-shared" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" ];
+    targetFlags = [ "-I." "--compiler-options" "-fPIC" "-shared" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" ];
     languageName = "Cuda";
     fileExtension = "cu";
     ldPrefix = "${cudatoolkit.lib}/lib";
