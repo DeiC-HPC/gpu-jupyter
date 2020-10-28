@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.09";
     jupyterWith = { url = "github:TethysSvensson/jupyterWith"; flake = false; };
   };
 
