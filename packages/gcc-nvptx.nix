@@ -55,11 +55,11 @@ stdenv.mkDerivation {
 
   postInstall = ''
     for f in ${nvptxTools}/nvptx-none/bin/*; do
-      ln -s $f $out/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/accel/nvptx-none
+      ln -s $f $out/libexec/gcc/x86_64-unknown-linux-gnu/${version}/accel/nvptx-none
     done
 
     mkdir -p $out/nix-support
-    echo "-B$out/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0" > $out/nix-support/cc-cflags
+    echo "-B$out/libexec/gcc/x86_64-unknown-linux-gnu/${version}" > $out/nix-support/cc-cflags
   '';
 
   dontDisableStatic = true;
