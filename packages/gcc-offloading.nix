@@ -16,6 +16,8 @@
 , gccSource
 , gccNvptx
 , cudatoolkit
+, hasNvptx ? true
+, hasGcn ? true
 }:
 
 with stdenv.lib;
@@ -26,10 +28,12 @@ let
 
   patches =
     optional (targetPlatform != hostPlatform) "${nixpkgs}/pkgs/development/compilers/gcc/libstdc++-target.patch"
+    ++ (optional hasNvptx ./sources/mkoffload-nvptx-fpic.patch)
+    ++ (optional hasGcn ./sources/mkoffload-gcn-fpic.patch)
     ++ [
       "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch"
-      ./sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff
     ];
+
 in
 stdenv.mkDerivation {
   pname = "gcc${version}-offload";

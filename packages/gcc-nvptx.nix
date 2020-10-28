@@ -11,7 +11,11 @@
 , gccSource
 , newlibSource
 , nvptxTools
+, hasNvptx ? true
+, hasGcn ? true
 }:
+
+with stdenv.lib;
 let inherit (gccSource) version;
 in
 stdenv.mkDerivation {
@@ -24,7 +28,9 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ texinfo which gettext perl gmp mpfr libmpc libelf ];
 
-  patches = [ ./sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff ];
+  patches = 
+    (optional hasNvptx ./sources/mkoffload-nvptx-fpic.patch) ++
+    (optional hasGcn ./sources/mkoffload-gcn-fpic.patch);
 
   postPatch = ''
     configureScripts=$(find . -name configure)

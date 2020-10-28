@@ -17,6 +17,7 @@ rec {
   gcc9-3-nvptx = pkgs.callPackage ../packages/gcc-nvptx.nix {
     inherit newlibSource nvptxTools;
     gccSource = gcc9-3-source;
+    hasGcn = false;
   };
   gcc10-1-nvptx = pkgs.callPackage ../packages/gcc-nvptx.nix {
     inherit newlibSource nvptxTools;
@@ -31,6 +32,7 @@ rec {
       inherit nixpkgs;
       gccNvptx = gcc9-3-nvptx;
       gccSource = gcc9-3-source;
+      hasGcn = false;
     };
     extraBuildCommands = ''
       echo '-B ${gcc9-3-nvptx}/bin/ -B ${gcc9-3-nvptx}/libexec/gcc/x86_64-unknown-linux-gnu/9.3.0/' >> $out/nix-support/cc-cflags
