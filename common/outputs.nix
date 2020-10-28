@@ -10,8 +10,13 @@ in
 
 rec {
   newlibSource = pkgs.callPackage ../packages/sources/newlib.nix { };
+  gcc10-1-source = pkgs.callPackage ../packages/sources/gcc10.1.nix { };
   gcc10-2-source = pkgs.callPackage ../packages/sources/gcc10.2.nix { };
   nvptxTools = pkgs.callPackage ../packages/nvptx-tools.nix { };
+  gcc10-1-nvptx = pkgs.callPackage ../packages/gcc-nvptx.nix {
+    inherit newlibSource nvptxTools;
+    gccSource = gcc10-1-source;
+  };
   gcc10-2-nvptx = pkgs.callPackage ../packages/gcc-nvptx.nix {
     inherit newlibSource nvptxTools;
     gccSource = gcc10-2-source;
