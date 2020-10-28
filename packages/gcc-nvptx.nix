@@ -24,7 +24,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ texinfo which gettext perl gmp mpfr libmpc libelf ];
 
-  patches = [ ../sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff ];
+  patches = [ ./sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff ];
 
   postPatch = ''
     configureScripts=$(find . -name configure)

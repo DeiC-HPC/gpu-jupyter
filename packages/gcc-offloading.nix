@@ -28,7 +28,7 @@ let
     optional (targetPlatform != hostPlatform) "${nixpkgs}/pkgs/development/compilers/gcc/libstdc++-target.patch"
     ++ [
       "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch"
-      ../sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff
+      ./sources/gcn-nvptx-offloading-mkoffload-handle--fpic--fPIC.diff
     ];
 in
 stdenv.mkDerivation {

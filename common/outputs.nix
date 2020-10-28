@@ -9,25 +9,25 @@ let
 in
 
 rec {
-  newlibSource = pkgs.callPackage ../sources/newlib.nix { };
-  gcc10Source = pkgs.callPackage ../sources/gcc10.nix { };
+  newlibSource = pkgs.callPackage ../packages/sources/newlib.nix { };
+  gcc10-2-source = pkgs.callPackage ../packages/sources/gcc10.2.nix { };
   nvptxTools = pkgs.callPackage ../packages/nvptx-tools.nix { };
-  gcc10Nvptx = pkgs.callPackage ../packages/gcc-nvptx.nix {
+  gcc10-2-nvptx = pkgs.callPackage ../packages/gcc-nvptx.nix {
     inherit newlibSource nvptxTools;
-    gccSource = gcc10Source;
+    gccSource = gcc10-2-source;
   };
-  gcc10Offloading = pkgs.wrapCCWith {
+  gcc10-2-offloading = pkgs.wrapCCWith {
     cc = pkgs.callPackage ../packages/gcc-offloading.nix {
       inherit nixpkgs;
-      gccNvptx = gcc10Nvptx;
-      gccSource = gcc10Source;
+      gccNvptx = gcc10-2-nvptx;
+      gccSource = gcc10-2-source;
     };
     extraBuildCommands = ''
-      echo '-B ${gcc10Nvptx}/bin/ -B ${gcc10Nvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/' >> $out/nix-support/cc-cflags
+      echo '-B ${gcc10-2-nvptx}/bin/ -B ${gcc10-2-nvptx}/libexec/gcc/x86_64-unknown-linux-gnu/10.2.0/' >> $out/nix-support/cc-cflags
     '';
   };
   kernels = pkgs.callPackage ../packages/kernels.nix {
-    inherit gcc10Offloading jupyter_generic_kernel;
+    inherit gcc10-2-offloading jupyter_generic_kernel;
   };
   jupyter = pkgs.callPackage ../packages/jupyter.nix {
     jupyter = jupyterWith.jupyterlabWith {
