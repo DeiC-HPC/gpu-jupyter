@@ -70,6 +70,7 @@ rec {
         packagefile = ../packages/jupyter-lockfiles/package.json;
         sha256 = "0d9sxj6l2vzk0ffvaxw0qr0c194q2b7yk0kr93f854naiwqrgm43";
       };
+      extraJupyterPath = p: with p.python3Packages; makePythonPath [ numpy pycuda pyopencl ];
     };
   };
 }
