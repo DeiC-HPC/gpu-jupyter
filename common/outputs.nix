@@ -42,7 +42,8 @@ rec {
     '';
   };
   kernels = pkgs.callPackage ../packages/kernels.nix {
-    inherit gcc10-2-offloading jupyter_generic_kernel;
+    inherit jupyter_generic_kernel;
+    gccOffloading = gcc10-1-offloading;
   };
   jupyter = pkgs.callPackage ../packages/jupyter.nix {
     jupyter = jupyterWith.jupyterlabWith {

@@ -3,7 +3,7 @@
 , python3
 , pkgs
 , jupyter_generic_kernel
-, gcc10-2-offloading
+, gccOffloading
 , linuxPackages
 , cudatoolkit
 }:
@@ -61,44 +61,44 @@ let
 
 
   cpp_openmp_kernel = kernelMaker {
-    targetCompiler = "${gcc10-2-offloading}/bin/g++";
+    targetCompiler = "${gccOffloading}/bin/g++";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
-    ldPrefix = "${gcc10-2-offloading.cc}/lib";
+    ldPrefix = "${gccOffloading.cc}/lib";
     ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cpp_openmp";
     displayName = "C++ with OpenMP";
     logo = ../logos/cpp.png;
   };
   cpp_openacc_kernel = kernelMaker {
-    targetCompiler = "${gcc10-2-offloading}/bin/g++";
+    targetCompiler = "${gccOffloading}/bin/g++";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "C++";
     fileExtension = "cpp";
-    ldPrefix = "${gcc10-2-offloading.cc}/lib";
+    ldPrefix = "${gccOffloading.cc}/lib";
     ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cpp_openacc";
     displayName = "C++ with OpenACC";
     logo = ../logos/cpp.png;
   };
   fortran_openmp_kernel = kernelMaker {
-    targetCompiler = "${gcc10-2-offloading}/bin/gfortran";
+    targetCompiler = "${gccOffloading}/bin/gfortran";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
-    ldPrefix = "${gcc10-2-offloading.cc}/lib";
+    ldPrefix = "${gccOffloading.cc}/lib";
     ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "fortran_openmp";
     displayName = "Fortran with OpenMP";
     logo = ../logos/fortran.png;
   };
   fortran_openacc_kernel = kernelMaker {
-    targetCompiler = "${gcc10-2-offloading}/bin/gfortran";
+    targetCompiler = "${gccOffloading}/bin/gfortran";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "Fortran";
     fileExtension = "f90";
-    ldPrefix = "${gcc10-2-offloading.cc}/lib";
+    ldPrefix = "${gccOffloading.cc}/lib";
     ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "fortran_openacc";
     displayName = "Fortran with OpenACC";
