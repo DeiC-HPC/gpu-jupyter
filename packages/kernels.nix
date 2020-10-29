@@ -66,7 +66,6 @@ let
     languageName = "C++";
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
-    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cpp_openmp";
     displayName = "C++ with OpenMP";
     logo = ../logos/cpp.png;
@@ -77,7 +76,6 @@ let
     languageName = "C++";
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
-    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cpp_openacc";
     displayName = "C++ with OpenACC";
     logo = ../logos/cpp.png;
@@ -88,7 +86,6 @@ let
     languageName = "Fortran";
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
-    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "fortran_openmp";
     displayName = "Fortran with OpenMP";
     logo = ../logos/fortran.png;
@@ -99,7 +96,6 @@ let
     languageName = "Fortran";
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
-    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "fortran_openacc";
     displayName = "Fortran with OpenACC";
     logo = ../logos/fortran.png;
@@ -110,7 +106,6 @@ let
     languageName = "Cuda";
     fileExtension = "cu";
     ldPrefix = "${cudatoolkit.lib}/lib";
-    ldSuffix = "${linuxPackages.nvidia_x11}/lib";
     name = "cuda";
     displayName = "Cuda compiler";
     logo = ../logos/cuda.png;

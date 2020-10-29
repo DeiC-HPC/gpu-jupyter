@@ -13,8 +13,8 @@ let
   fixedTargetFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") targetFlags;
   patch = writeText "jupyter-c-kernel-patch" ''
     diff -Naur jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py
-    --- jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py	2018-01-24 11:05:46.000000000 +0100
-    +++ jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py	2020-10-21 15:33:48.762021941 +0200
+    --- jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py  2018-01-24 11:05:46.000000000 +0100
+    +++ jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py  2020-10-21 15:33:48.762021941 +0200
     @@ -14,7 +14,7 @@
          A subprocess that allows to read its stdout and stderr in real time
          """

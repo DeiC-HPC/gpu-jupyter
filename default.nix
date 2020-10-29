@@ -2,10 +2,10 @@
 
 with (import ./common/inputs.nix args);
 with (import ./common/outputs.nix {
-  inherit nixpkgs pkgs jupyterWith;
-});
+  inherit nixpkgs pkgs jupyterWith system;
+}).packages."${system}";
 
 pkgs.symlinkJoin {
-  name = "jupyter";
+  name = "hpc-nix";
   paths = [ jupyter gccOffloading ];
 }

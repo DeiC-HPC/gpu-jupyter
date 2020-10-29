@@ -6,9 +6,7 @@
 
   outputs = inputs:
     with (import ./common/inputs.nix inputs);
-    {
-      packages."${system}" = import ./common/outputs.nix {
-        inherit nixpkgs pkgs jupyterWith;
-      };
+    import ./common/outputs.nix {
+      inherit nixpkgs pkgs jupyterWith system;
     };
 }

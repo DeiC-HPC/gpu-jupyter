@@ -28,7 +28,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ texinfo which gettext perl gmp mpfr libmpc libelf ];
 
-  patches = 
+  patches =
     (optional hasNvptx ./sources/mkoffload-nvptx-fpic.patch) ++
     (optional hasGcn ./sources/mkoffload-gcn-fpic.patch);
 
