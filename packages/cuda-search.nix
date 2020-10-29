@@ -15,6 +15,10 @@ let
     "libcuda.so.1"
     "libnvidia-ptxjitcompiler.so.1"
   ];
+  wantedLibs = lib.strings.concatStringsSep " " [
+    "libcuda.so.1"
+    "libnvidia-*.so.1"
+  ];
   makeLibDir = writeScript "make-cuda-libdir.sh" ''
     #!${bash}/bin/bash
 
@@ -57,8 +61,11 @@ let
       exit 1
     fi
   
-    for lib in ${neededLibs}; do
-      ${coreutils}/bin/ln -s $(${coreutils}/bin/realpath -s "$LIBCUDA_DIR/$lib") $CUDA_TMPDIR
+    for lib in ${wantedLibs}; do
+      files=($(echo $LIBCUDA_DIR/$lib))
+      for f in "''${files[@]}"; do      
+        ${coreutils}/bin/ln -s $(${coreutils}/bin/realpath -s $f) $CUDA_TMPDIR
+      done
     done
   '';
 in
