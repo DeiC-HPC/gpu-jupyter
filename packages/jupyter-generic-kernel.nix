@@ -42,7 +42,7 @@ let
 
          def cleanup_files(self):
              """Remove all the temporary files created by the kernel"""
-    @@ -107,14 +107,15 @@
+    @@ -107,14 +107,17 @@
          def _write_to_stderr(self, contents):
              self.send_response(self.iopub_socket, 'stream', {'name': 'stderr', 'text': contents})
 
@@ -58,6 +58,8 @@ let
     -        cflags = ['-std=c11', '-fPIC', '-shared', '-rdynamic'] + cflags
     -        args = ['gcc', source_filename] + cflags + ['-o', binary_filename] + ldflags
     +        cflags = [${fixedTargetFlags}] + cflags
+    +        if 'JUPYTER_HEADER_FILES' in os.environ:
+    +            cflags += [ "-idirafter" + os.environ["JUPYTER_HEADER_FILES"] ]
     +        args = ['${targetCompiler}', source_filename] + cflags + ['-o', binary_filename] + ldflags
              return self.create_jupyter_subprocess(args)
 
@@ -71,7 +73,7 @@ let
                  source_file.write(code)
                  source_file.flush()
                  with self.new_temp_file(suffix='.out') as binary_file:
-    @@ -153,18 +154,24 @@
+    @@ -153,18 +156,24 @@
                      p.write_contents()
                      if p.returncode != 0:  # Compilation failed
                          self._write_to_stderr(
