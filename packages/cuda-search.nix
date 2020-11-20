@@ -9,7 +9,7 @@ let
   searchDirs = lib.strings.concatStringsSep " " [
     "/usr/lib"
     "/usr/lib/x86_64-linux-gnu"
-    "/run/current-system/sw/lib/"
+    "/run/opengl-driver/lib/"
   ];
   neededLibs = lib.strings.concatStringsSep " " [
     "libcuda.so.1"
