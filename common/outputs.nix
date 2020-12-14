@@ -74,6 +74,23 @@ rec {
         extraJupyterPath = p: with p.python3Packages; makePythonPath [ numpy pycuda pyopencl ];
       };
     };
+    cudaFromDockerHub = pkgs.dockerTools.pullImage {
+      imageName = "nvidia/cuda";
+      imageDigest = "sha256:91eaef4d5a8d8a54704d5ccce99904d7ad693e28e6736e839062f1f9a8379249";
+      sha256 = "sha256-GmsqcckNMU/bZ2wXmbEfNoLA8+OGQoVEgS7PZFTUGVs=";
+    };
+    startScript = pkgs.writeScript "start" ''
+        #!${pkgs.bash}/bin/sh
+        export NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1
+        export NIX_HARDENING_ENABLE='fortify stackprotector pic strictoverflow relro bindnow'
+        source ${cudaSearch}
+        ${jupyter}/bin/jupyter-lab --ip=0.0.0.0 --allow-root
+      '';
+    docker-image = pkgs.dockerTools.buildImage {
+      fromImage = cudaFromDockerHub;
+      name = "jupyter-gcc-offloading";
+      config.cmd = ["${startScript}"];
+    };
   };
   devShell."${system}" = 
     with packages."${system}"; 
