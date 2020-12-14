@@ -37,7 +37,7 @@ let
       done
       return 0
     }
-  
+
     if [[ -z "$LIBCUDA_DIR" ]]; then
       for d in ${searchDirs}; do
         if checkCudaDir $d; then
@@ -46,7 +46,7 @@ let
         fi
       done
     fi
-  
+
     if [[ -z "$LIBCUDA_DIR" ]]; then
       echo
       echo -e "${error}: Could not automatically find libcuda${NC}" >&2
@@ -60,10 +60,10 @@ let
       echo
       exit 1
     fi
-  
+
     for lib in ${wantedLibs}; do
       files=($(echo $LIBCUDA_DIR/$lib))
-      for f in "''${files[@]}"; do      
+      for f in "''${files[@]}"; do
         ${coreutils}/bin/ln -s $(${coreutils}/bin/realpath -s $f) $CUDA_TMPDIR
       done
     done
