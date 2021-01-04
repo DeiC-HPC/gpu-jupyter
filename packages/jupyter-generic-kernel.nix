@@ -5,7 +5,9 @@
 , targetCompiler
 , targetFlags
 , languageName
+, languageVersion
 , fileExtension
+, displayName
 , includeFlag
 , ldPrefix ? ""
 , ldSuffix ? ""
@@ -34,7 +36,26 @@ let
 
              self._stdout_queue = Queue()
              self._stdout_thread = Thread(target=RealTimeSubprocess._enqueue_output, args=(self.stdout, self._stdout_queue))
-    @@ -84,7 +84,7 @@
+    @@ -69,13 +69,12 @@
+     class CKernel(Kernel):
+         implementation = 'jupyter_c_kernel'
+         implementation_version = '1.0'
+    -    language = 'c'
+    -    language_version = 'C11'
+    -    language_info = {'name': 'c',
+    +    language = '${languageName}'
+    +    language_version = '${languageVersion}'
+    +    language_info = {'name': '${languageName}',
+                          'mimetype': 'text/plain',
+    -                     'file_extension': '.c'}
+    -    banner = "C kernel.\n" \
+    -             "Uses gcc, compiles in C11, and creates source code files and executables in temporary folder.\n"
+    +                     'file_extension': '.${fileExtension}'}
+    +    banner = "${displayName} kernel"
+
+         def __init__(self, *args, **kwargs):
+             super(CKernel, self).__init__(*args, **kwargs)
+    @@ -84,7 +83,7 @@
              os.close(mastertemp[0])
              self.master_path = mastertemp[1]
              filepath = path.join(path.dirname(path.realpath(__file__)), 'resources', 'master.c')
@@ -43,7 +64,7 @@ let
 
          def cleanup_files(self):
              """Remove all the temporary files created by the kernel"""
-    @@ -107,14 +107,17 @@
+    @@ -107,14 +106,17 @@
          def _write_to_stderr(self, contents):
              self.send_response(self.iopub_socket, 'stream', {'name': 'stderr', 'text': contents})
 
@@ -65,7 +86,7 @@ let
              return self.create_jupyter_subprocess(args)
 
          def _filter_magics(self, code):
-    @@ -143,7 +144,7 @@
+    @@ -143,7 +145,7 @@
 
              magics = self._filter_magics(code)
 
@@ -74,7 +95,7 @@ let
                  source_file.write(code)
                  source_file.flush()
                  with self.new_temp_file(suffix='.out') as binary_file:
-    @@ -153,18 +156,24 @@
+    @@ -153,18 +155,24 @@
                      p.write_contents()
                      if p.returncode != 0:  # Compilation failed
                          self._write_to_stderr(

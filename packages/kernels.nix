@@ -12,6 +12,7 @@ let
     { targetCompiler
     , targetFlags
     , languageName
+    , languageVersion
     , fileExtension
     , includeFlag
     , ldPrefix ? ""
@@ -22,7 +23,7 @@ let
     }:
     let
       pkg = jupyter_generic_kernel {
-        inherit targetCompiler targetFlags languageName fileExtension includeFlag ldPrefix ldSuffix;
+        inherit targetCompiler targetFlags displayName languageName languageVersion fileExtension includeFlag ldPrefix ldSuffix;
       };
       kernelEnv = python3.withPackages (python3Packages:
         [
@@ -39,7 +40,7 @@ let
           "{connection_file}"
         ];
         display_name = displayName;
-        language = lib.strings.toLower languageName;
+        language = languageName;
         logo64 = "logo-64x64.png";
       };
 
@@ -64,7 +65,8 @@ let
   cpp_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    languageName = "C++";
+    languageName = "c++";
+    languageVersion = "c++17";
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "cpp_openmp";
@@ -75,7 +77,8 @@ let
   cpp_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    languageName = "C++";
+    languageName = "c++";
+    languageVersion = "c++17";
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "cpp_openacc";
@@ -86,7 +89,8 @@ let
   fortran_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    languageName = "Fortran";
+    languageName = "fortran";
+    languageVersion = "F90";
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "fortran_openmp";
@@ -97,7 +101,8 @@ let
   fortran_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
-    languageName = "Fortran";
+    languageName = "fortran";
+    languageVersion = "F90";
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "fortran_openacc";
@@ -108,7 +113,8 @@ let
   nvcc_kernel = kernelMaker {
     targetCompiler = "${cudatoolkit}/bin/nvcc";
     targetFlags = [ "--compiler-options" "-fPIC" "-shared" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" ];
-    languageName = "Cuda";
+    languageName = "c++";
+    languageVersion = "c++17";
     fileExtension = "cu";
     ldPrefix = "${cudatoolkit.lib}/lib";
     name = "cuda";
