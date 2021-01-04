@@ -6,6 +6,7 @@
 , targetFlags
 , languageName
 , fileExtension
+, includeFlag
 , ldPrefix ? ""
 , ldSuffix ? ""
 }:
@@ -59,7 +60,7 @@ let
     -        args = ['gcc', source_filename] + cflags + ['-o', binary_filename] + ldflags
     +        cflags = [${fixedTargetFlags}] + cflags
     +        if 'JUPYTER_HEADER_FILES' in os.environ:
-    +            cflags += [ "-idirafter" + os.environ["JUPYTER_HEADER_FILES"] ]
+    +            cflags += [ "${includeFlag}" + os.environ["JUPYTER_HEADER_FILES"] ]
     +        args = ['${targetCompiler}', source_filename] + cflags + ['-o', binary_filename] + ldflags
              return self.create_jupyter_subprocess(args)
 
