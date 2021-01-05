@@ -36,6 +36,7 @@ rec {
     name,
     contents ? [],
     diskSize ? 1024,
+    memSize ? 512,
     runScript ? "#!${stdenv.shell}\nexec /bin/sh",
     runAsRoot ? null
   }:
@@ -47,6 +48,7 @@ rec {
         runScriptFile = shellScript "run-script.sh" runScript;
         result = vmTools.runInLinuxVM (
           runCommand "singularity-image-${name}.img" {
+            inherit memSize;
             buildInputs = [ singularity e2fsprogs util-linux gawk ];
             layerClosure = writeReferencesToFile layer;
             preVM = vmTools.createEmptyImage {
