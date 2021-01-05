@@ -91,11 +91,11 @@ rec {
       name = "jupyter-gcc-offloading";
       config.cmd = ["${startScript}"];
     };
-    singularity-tools = pkgs.callPackage ../packages/singularity-tools.nix {};
+    singularity-tools = pkgs.callPackage ../packages/singularity-tools.nix { util-linux = pkgs.util-linux ; };
     singularity-image = singularity-tools.buildImage {
       name = "jupyter-gcc-offloading-singularity";
       runScript = "${startScript}";
-      diskSize = 10000;
+      diskSize = 20000;
       memSize = 10000;
     };
   };
