@@ -91,6 +91,13 @@ rec {
       name = "jupyter-gcc-offloading";
       config.cmd = ["${startScript}"];
     };
+    singularity-tools = pkgs.callPackage ../packages/singularity-tools.nix {};
+    singularity-image = singularity-tools.buildImage {
+      name = "jupyter-gcc-offloading-singularity";
+      runScript = "${startScript}";
+      diskSize = 10000;
+      memSize = 10000;
+    };
   };
   devShell."${system}" = 
     with packages."${system}"; 

@@ -10,6 +10,7 @@ let
     "/usr/lib"
     "/usr/lib/x86_64-linux-gnu"
     "/run/opengl-driver/lib/"
+    "/usr/local/cuda*/compat"
   ];
   neededLibs = lib.strings.concatStringsSep " " [
     "libcuda.so.1"
@@ -27,7 +28,7 @@ let
     CUDA_TMPDIR="$1"
 
     checkCudaDir() {
-      if [[ -z "$1" ]]; then
+      if ! [[ -d "$1" ]]; then
         return 1
       fi
       for lib in ${neededLibs}; do
