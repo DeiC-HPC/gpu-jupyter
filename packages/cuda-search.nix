@@ -10,7 +10,7 @@ let
     "/usr/lib"
     "/usr/lib/x86_64-linux-gnu"
     "/run/opengl-driver/lib/"
-    "/usr/local/cuda*/compat"
+    "/.singularity.d/lib"
   ];
   neededLibs = lib.strings.concatStringsSep " " [
     "libcuda.so.1"
@@ -40,7 +40,7 @@ let
     }
 
     if [[ -z "$LIBCUDA_DIR" ]]; then
-      for d in ${searchDirs}; do
+      for d in ${searchDirs} ''${LD_LIBRARY_PATH//:/ }; do
         if checkCudaDir $d; then
           LIBCUDA_DIR=$d
           break
@@ -80,9 +80,9 @@ writeText "cuda-search.sh" ''
 
   if ${makeLibDir} $CUDA_TMPDIR; then
     if [ -z "$LD_LIBRARY_PATH" ]; then
-      export LD_LIBRARY_PATH="$CUDA_TMPDIR"
+      export TARGET_LD_LIBRARY_PATH="$CUDA_TMPDIR"
     else
-      export LD_LIBRARY_PATH="$CUDA_TMPDIR:$LD_LIBRARY_PATH"
+      export TARGET_LD_LIBRARY_PATH="$CUDA_TMPDIR:$LD_LIBRARY_PATH"
     fi
   fi
 ''

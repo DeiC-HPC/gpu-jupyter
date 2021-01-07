@@ -64,6 +64,7 @@ rec {
     };
     cudaSearch = pkgs.callPackage ../packages/cuda-search.nix { };
     jupyter = pkgs.callPackage ../packages/jupyter.nix {
+      inherit cudaSearch;
       jupyter = jupyterWith.jupyterlabWith {
         inherit kernels;
         directory = jupyterWith.mkDirectoryFromLockFile {
@@ -81,9 +82,6 @@ rec {
     };
     startScript = pkgs.writeScript "start" ''
         #!${pkgs.bash}/bin/sh
-        export NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1
-        export NIX_HARDENING_ENABLE='fortify stackprotector pic strictoverflow relro bindnow'
-        source ${cudaSearch}
         ${jupyter}/bin/jupyter-lab --ip=0.0.0.0 --allow-root
       '';
     docker-image = pkgs.dockerTools.buildImage {

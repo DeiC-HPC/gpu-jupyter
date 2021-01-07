@@ -8,12 +8,13 @@
 , languageVersion
 , fileExtension
 , displayName
-, includeFlag
+, includeFlags
 , ldPrefix ? ""
 , ldSuffix ? ""
 }:
 let
   fixedTargetFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") targetFlags;
+  fixedIncludeFlags = lib.strings.concatMapStringsSep ", " (s: "'" + s + "'") includeFlags;
   patch = writeText "jupyter-c-kernel-patch" ''
     diff -Naur jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py jupyter_c_kernel-1.2.2-new/jupyter_c_kernel/kernel.py
     --- jupyter_c_kernel-1.2.2/jupyter_c_kernel/kernel.py  2018-01-24 11:05:46.000000000 +0100
@@ -81,7 +82,7 @@ let
     -        args = ['gcc', source_filename] + cflags + ['-o', binary_filename] + ldflags
     +        cflags = [${fixedTargetFlags}] + cflags
     +        if 'JUPYTER_HEADER_FILES' in os.environ:
-    +            cflags += [ "${includeFlag}" + os.environ["JUPYTER_HEADER_FILES"] ]
+    +            cflags += [ ${fixedIncludeFlags} + os.environ["JUPYTER_HEADER_FILES"] ]
     +        args = ['${targetCompiler}', source_filename] + cflags + ['-o', binary_filename] + ldflags
              return self.create_jupyter_subprocess(args)
 

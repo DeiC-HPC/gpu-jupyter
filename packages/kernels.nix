@@ -14,7 +14,7 @@ let
     , languageName
     , languageVersion
     , fileExtension
-    , includeFlag
+    , includeFlags
     , ldPrefix ? ""
     , ldSuffix ? ""
     , name
@@ -23,7 +23,7 @@ let
     }:
     let
       pkg = jupyter_generic_kernel {
-        inherit targetCompiler targetFlags displayName languageName languageVersion fileExtension includeFlag ldPrefix ldSuffix;
+        inherit targetCompiler targetFlags displayName languageName languageVersion fileExtension includeFlags ldPrefix ldSuffix;
       };
       kernelEnv = python3.withPackages (python3Packages:
         [
@@ -72,7 +72,7 @@ let
     name = "cpp_openmp";
     displayName = "C++ with OpenMP";
     logo = ../logos/cpp.png;
-    includeFlag = "-idirafter";
+    includeFlags = [ "-idirafter" ];
   };
   cpp_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
@@ -84,7 +84,7 @@ let
     name = "cpp_openacc";
     displayName = "C++ with OpenACC";
     logo = ../logos/cpp.png;
-    includeFlag = "-idirafter";
+    includeFlags = [ "-idirafter" ];
   };
   fortran_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
@@ -96,7 +96,7 @@ let
     name = "fortran_openmp";
     displayName = "Fortran with OpenMP";
     logo = ../logos/fortran.png;
-    includeFlag = "-idirafter";
+    includeFlags = [ "-idirafter" ];
   };
   fortran_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
@@ -108,7 +108,7 @@ let
     name = "fortran_openacc";
     displayName = "Fortran with OpenACC";
     logo = ../logos/fortran.png;
-    includeFlag = "-idirafter";
+    includeFlags = [ "-idirafter" ];
   };
   nvcc_kernel = kernelMaker {
     targetCompiler = "${cudatoolkit}/bin/nvcc";
@@ -120,7 +120,7 @@ let
     name = "cuda";
     displayName = "Cuda compiler";
     logo = ../logos/cuda.png;
-    includeFlag = "-I";
+    includeFlags = [ "--compiler-options" "-idirafter" ];
   };
 in
 [ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel nvcc_kernel ]
