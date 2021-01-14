@@ -63,6 +63,9 @@ rec {
       inherit jupyter_generic_kernel gccOffloading;
     };
     cudaSearch = pkgs.callPackage ../packages/cuda-search.nix { };
+    patchedPyOpenCL12 = pkgs.python3Packages.pyopencl.overrideAttrs (attrs: {
+      postPatch = attrs.postPatch + "\necho 'CL_PRETEND_VERSION = \"1.2\"' >> siteconf.py";
+    });
     jupyter = pkgs.callPackage ../packages/jupyter.nix {
       inherit cudaSearch;
       jupyter = jupyterWith.jupyterlabWith {
@@ -72,7 +75,7 @@ rec {
           packagefile = ../packages/jupyter-lockfiles/package.json;
           sha256 = "0d9sxj6l2vzk0ffvaxw0qr0c194q2b7yk0kr93f854naiwqrgm43";
         };
-        extraJupyterPath = p: with p.python3Packages; makePythonPath [ numpy pycuda pyopencl matplotlib ];
+        extraJupyterPath = p: with p.python3Packages; makePythonPath [ numpy pycuda patchedPyOpenCL12 matplotlib ];
       };
     };
     cudaFromDockerHub = pkgs.dockerTools.pullImage {
