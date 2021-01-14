@@ -84,5 +84,6 @@ writeText "cuda-search.sh" ''
     else
       export TARGET_LD_LIBRARY_PATH="$CUDA_TMPDIR:$LD_LIBRARY_PATH"
     fi
+    export LD_LIBRARY_PATH="$TARGET_LD_LIBRARY_PATH"
   fi
 ''
