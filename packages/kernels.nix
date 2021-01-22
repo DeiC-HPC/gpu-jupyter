@@ -71,7 +71,7 @@ let
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "cpp_openmp";
-    displayName = "C++ with OpenMP";
+    displayName = "C++ with OpenMP (g++)";
     logo = ../logos/cpp.png;
     includeFlags = [ "-idirafter" ];
   };
@@ -83,7 +83,7 @@ let
     fileExtension = "cpp";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "cpp_openacc";
-    displayName = "C++ with OpenACC";
+    displayName = "C++ with OpenACC (g++)";
     logo = ../logos/cpp.png;
     includeFlags = [ "-idirafter" ];
   };
@@ -95,7 +95,7 @@ let
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "fortran_openmp";
-    displayName = "Fortran with OpenMP";
+    displayName = "Fortran with OpenMP (gfortran)";
     logo = ../logos/fortran.png;
     includeFlags = [ "-idirafter" ];
   };
@@ -107,7 +107,7 @@ let
     fileExtension = "f90";
     ldPrefix = "${gccOffloading.cc}/lib";
     name = "fortran_openacc";
-    displayName = "Fortran with OpenACC";
+    displayName = "Fortran with OpenACC (gfortran)";
     logo = ../logos/fortran.png;
     includeFlags = [ "-idirafter" ];
   };
@@ -131,7 +131,7 @@ let
     fileExtension = "cpp";
     ldPrefix = "";
     name = "nvcpp-openmp";
-    displayName = "NVIDIA HPC SDK nvc++ gpu enabled openmp compiler";
+    displayName = "C++ with OpenMP (nvc++)";
     logo = ../logos/cpp.png;
     includeFlags = [ "-I" ];
   };
@@ -143,7 +143,7 @@ let
     fileExtension = "cpp";
     ldPrefix = "";
     name = "nvcpp-openacc";
-    displayName = "NVIDIA HPC SDK nvc++ gpu enabled openacc compiler";
+    displayName = "C++ with OpenACC (nvc++)";
     logo = ../logos/cpp.png;
     includeFlags = [ "-I" ];
   };
@@ -155,7 +155,7 @@ let
     fileExtension = "f90";
     ldPrefix = "";
     name = "nvfortran-openmp";
-    displayName = "NVIDIA HPC SDK nvfortran gpu enabled openmp compiler";
+    displayName = "Fortran with OpenMP (nvfortran)";
     logo = ../logos/fortran.png;
     includeFlags = [ "-I" ];
   };
@@ -167,7 +167,7 @@ let
     fileExtension = "f90";
     ldPrefix = "";
     name = "nvfortran-openacc";
-    displayName = "NVIDIA HPC SDK nvfortran gpu enabled openacc compiler";
+    displayName = "Fortran with OpenACC (nvfortran)";
     logo = ../logos/fortran.png;
     includeFlags = [ "-I" ];
   };
