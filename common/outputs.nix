@@ -9,6 +9,8 @@ let
 in
 rec {
   packages."${system}" = rec {
+    # COMPILERS
+    nvhpc = pkgs.callPackage ../packages/nvhpc.nix { };
     newlibSource = pkgs.callPackage ../packages/sources/newlib.nix { };
     gcc9-3-source = pkgs.callPackage ../packages/sources/gcc9.3.nix { };
     gcc10-1-source = pkgs.callPackage ../packages/sources/gcc10.1.nix { };
@@ -59,9 +61,12 @@ rec {
       '';
     };
     gccOffloading = gcc9-3-offloading;
+
+    # JUPYTER
     kernels = pkgs.callPackage ../packages/kernels.nix {
-      inherit jupyter_generic_kernel gccOffloading;
+      inherit jupyter_generic_kernel gccOffloading nvhpc;
     };
+
     cudaSearch = pkgs.callPackage ../packages/cuda-search.nix { };
     patchedPyOpenCL12 = pkgs.python3Packages.pyopencl.overrideAttrs (attrs: {
       postPatch = attrs.postPatch + "\necho 'CL_PRETEND_VERSION = \"1.2\"' >> siteconf.py";
@@ -75,7 +80,7 @@ rec {
           packagefile = ../packages/jupyter-lockfiles/package.json;
           sha256 = "0d9sxj6l2vzk0ffvaxw0qr0c194q2b7yk0kr93f854naiwqrgm43";
         };
-        extraJupyterPath = p: with p.python3Packages; makePythonPath [ numpy pycuda patchedPyOpenCL12 matplotlib ];
+        extraJupyterPath = p: with p.python3Packages; makePythonPath [ numpy pycuda patchedPyOpenCL12 matplotlib scipy pillow ];
       };
     };
     cudaFromDockerHub = pkgs.dockerTools.pullImage {
@@ -87,6 +92,8 @@ rec {
         #!${pkgs.bash}/bin/sh
         ${jupyter}/bin/jupyter-lab --ip=0.0.0.0 --allow-root
       '';
+
+    # IMAGES
     docker-image = pkgs.dockerTools.buildImage {
       fromImage = cudaFromDockerHub;
       name = "jupyter-gcc-offloading";
@@ -100,8 +107,8 @@ rec {
       memSize = 10000;
     };
   };
-  devShell."${system}" = 
-    with packages."${system}"; 
+  devShell."${system}" =
+    with packages."${system}";
     pkgs.callPackage ../packages/devshell.nix {
       inherit jupyter gccOffloading cudaSearch;
     };

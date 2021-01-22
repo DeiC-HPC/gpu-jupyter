@@ -6,6 +6,7 @@
 , gccOffloading
 , linuxPackages
 , cudatoolkit
+, nvhpc
 }:
 let
   kernelMaker =
@@ -64,7 +65,7 @@ let
 
   cpp_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-O3" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "c++";
     languageVersion = "c++17";
     fileExtension = "cpp";
@@ -76,7 +77,7 @@ let
   };
   cpp_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-O3" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "c++";
     languageVersion = "c++17";
     fileExtension = "cpp";
@@ -88,7 +89,7 @@ let
   };
   fortran_openmp_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-Ofast" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "fortran";
     languageVersion = "F90";
     fileExtension = "f90";
@@ -100,7 +101,7 @@ let
   };
   fortran_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/gfortran";
-    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
+    targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-Ofast" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
     languageName = "fortran";
     languageVersion = "F90";
     fileExtension = "f90";
@@ -112,7 +113,7 @@ let
   };
   nvcc_kernel = kernelMaker {
     targetCompiler = "${cudatoolkit}/bin/nvcc";
-    targetFlags = [ "--compiler-options" "-fPIC" "-shared" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" ];
+    targetFlags = [ "--compiler-options" "-fPIC" "-shared" "-O3" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" ];
     languageName = "c++";
     languageVersion = "c++17";
     fileExtension = "cu";
@@ -122,5 +123,53 @@ let
     logo = ../logos/cuda.png;
     includeFlags = [ "--compiler-options" "-idirafter" ];
   };
+  nvcpp_openmp_kernel = kernelMaker {
+    targetCompiler = "${nvhpc}/bin/nvc++";
+    targetFlags = [ "-shared" "-rdynamic" "-O4" "-mp=gpu" "-rpath" "${pkgs.gcc-unwrapped.lib}/lib" ];
+    languageName = "c++";
+    languageVersion = "c++17";
+    fileExtension = "cpp";
+    ldPrefix = "";
+    name = "nvcpp-openmp";
+    displayName = "NVIDIA HPC SDK nvc++ gpu enabled openmp compiler";
+    logo = ../logos/cpp.png;
+    includeFlags = [ "-I" ];
+  };
+  nvcpp_openacc_kernel = kernelMaker {
+    targetCompiler = "${nvhpc}/bin/nvc++";
+    targetFlags = [ "-shared" "-rdynamic" "-O4" "-acc=gpu" "-rpath" "${pkgs.gcc-unwrapped.lib}/lib" ];
+    languageName = "c++";
+    languageVersion = "c++17";
+    fileExtension = "cpp";
+    ldPrefix = "";
+    name = "nvcpp-openacc";
+    displayName = "NVIDIA HPC SDK nvc++ gpu enabled openacc compiler";
+    logo = ../logos/cpp.png;
+    includeFlags = [ "-I" ];
+  };
+  nvfortran_openmp_kernel = kernelMaker {
+    targetCompiler = "${nvhpc}/bin/nvfortran";
+    targetFlags = [ "-shared" "-O4" "-mp=gpu" "-rpath" "${pkgs.gcc-unwrapped.lib}/lib" ];
+    languageName = "fortran";
+    languageVersion = "F90";
+    fileExtension = "f90";
+    ldPrefix = "";
+    name = "nvfortran-openmp";
+    displayName = "NVIDIA HPC SDK nvfortran gpu enabled openmp compiler";
+    logo = ../logos/fortran.png;
+    includeFlags = [ "-I" ];
+  };
+  nvfortran_openacc_kernel = kernelMaker {
+    targetCompiler = "${nvhpc}/bin/nvfortran";
+    targetFlags = [ "-shared" "-O4" "-acc=gpu" "-rpath" "${pkgs.gcc-unwrapped.lib}/lib" ];
+    languageName = "fortran";
+    languageVersion = "F90";
+    fileExtension = "f90";
+    ldPrefix = "";
+    name = "nvfortran-openacc";
+    displayName = "NVIDIA HPC SDK nvfortran gpu enabled openacc compiler";
+    logo = ../logos/fortran.png;
+    includeFlags = [ "-I" ];
+  };
 in
-[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel nvcc_kernel ]
+[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel nvcc_kernel nvcpp_openmp_kernel nvcpp_openacc_kernel nvfortran_openmp_kernel nvfortran_openacc_kernel ]
