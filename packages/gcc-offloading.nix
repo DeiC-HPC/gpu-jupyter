@@ -1,4 +1,5 @@
-{ nixpkgs
+{ lib
+, nixpkgs
 , stdenv
 , targetPackages
 , texinfo
@@ -115,7 +116,7 @@ stdenv.mkDerivation {
   configurePlatforms = [ "build" "host" "target" ];
 
   configureFlags = (import "${nixpkgs}/pkgs/development/compilers/gcc/common/configure-flags.nix" {
-    inherit stdenv targetPackages version gmp mpfr libmpc libelf isl;
+    inherit lib stdenv targetPackages version gmp mpfr libmpc libelf isl;
     libcCross = null;
     crossStageStatic = false;
     enableShared = true;
