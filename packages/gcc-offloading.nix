@@ -15,10 +15,12 @@
 , zlib
 , buildPackages
 , gccSource
-, gccNvptx
+, gccNvptx ? null
+, gccAmdgcn ? null
 , cudatoolkit
 , hasNvptx ? true
 , hasGcn ? true
+, fpicPatch ? true
 }:
 
 with stdenv.lib;
@@ -29,8 +31,8 @@ let
 
   patches =
     optional (targetPlatform != hostPlatform) "${nixpkgs}/pkgs/development/compilers/gcc/libstdc++-target.patch"
-    ++ (optional hasNvptx ./sources/mkoffload-nvptx-fpic.patch)
-    ++ (optional hasGcn ./sources/mkoffload-gcn-fpic.patch)
+    ++ (optional (hasNvptx && fpicPatch) ./sources/mkoffload-nvptx-fpic.patch)
+    ++ (optional (hasGcn && fpicPatch) ./sources/mkoffload-gcn-fpic.patch)
     ++ [
       "${nixpkgs}/pkgs/development/compilers/gcc/no-sys-dirs.patch"
     ];
@@ -132,8 +134,8 @@ stdenv.mkDerivation {
     langObjCpp = false;
     langJit = false;
   }) ++ [
-    "--enable-offload-targets=nvptx-none=${gccNvptx}/nvptx-none"
-    "--with-cuda-driver=${cudatoolkit}"
+    (if gccNvptx != null then "--enable-offload-targets=nvptx-none=${gccNvptx}/nvptx-none --with-cuda-driver=${cudatoolkit}" else "")
+    (if gccAmdgcn != null then "--enable-offload-targets=amdgcn-amdhsa=${gccAmdgcn}/amdgcn-amdhsa" else "")
     "--disable-bootstrap"
   ];
 

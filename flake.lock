@@ -16,7 +16,41 @@
         "type": "github"
       }
     },
+    "nixos-rocm": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1642298342,
+        "narHash": "sha256-fdzT547KQzsEq5vK85lyOqIQLkwLqEPnuMpAH6UvXoc=",
+        "owner": "nixos-rocm",
+        "repo": "nixos-rocm",
+        "rev": "a4a16c947de9167cf3ab38d705a782771bcb5141",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos-rocm",
+        "repo": "nixos-rocm",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
+      "locked": {
+        "lastModified": 1642104392,
+        "narHash": "sha256-m71b7MgMh9FDv4MnI5sg9MiBVW6DhE1zq+d/KlLWSC8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "5aaed40d22f0d9376330b6fa413223435ad6fee5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1610842533,
         "narHash": "sha256-6hW8CML8RnNrRJMv7E56rXAhsCNgUM97HIVSqWxnO64=",
@@ -35,7 +69,8 @@
     "root": {
       "inputs": {
         "jupyterWith": "jupyterWith",
-        "nixpkgs": "nixpkgs"
+        "nixos-rocm": "nixos-rocm",
+        "nixpkgs": "nixpkgs_2"
       }
     }
   },

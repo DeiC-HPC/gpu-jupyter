@@ -15,9 +15,11 @@ rec {
   pkgs = args.pkgs or (import nixpkgs {
     inherit system;
     config.allowUnfree = true;
+    config.rocmTargets = ["gfx900" "gfx906" "gfx908" "gfx909" "gfx90a" "gfx1030" "gfx1031" ];
     overlays = [
       (import "${jupyterWithSrc}/nix/python-overlay.nix")
       (import "${jupyterWithSrc}/nix/overlay.nix")
+      (import args.nixos-rocm)
     ];
   });
   jupyterWith = import jupyterWithSrc { inherit pkgs; };

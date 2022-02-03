@@ -7,6 +7,9 @@
 , linuxPackages
 , cudatoolkit
 , nvhpc
+, rocm-llvm
+, rocm-device-libs
+, hipcc
 }:
 let
   kernelMaker =
@@ -75,6 +78,22 @@ let
     logo = ../logos/cpp.png;
     includeFlags = [ "-idirafter" ];
   };
+  cpp_openmp_amd_kernel = kernelMaker {
+#clang++ -x cl -Xclang -finclude-default-header   -target amdgcn-amd-amdhsa -mcpu=gfx1030   --rocm-path=/nix/store/vpy1vim7780a6v4fr2igr25y11ahs58a-rocm-device-libs-4.0.0/
+    targetCompiler = "${rocm-llvm}/bin/clang++";
+    targetFlags = [ "-L" "${pkgs.gcc-unwrapped.lib}/lib" "-shared" "-rdynamic" "-O3" "-x" "cl" "-Xclang" "-finclude-default-header" "-target" "amdgcn-amd-amdhsa" "-mcpu=gfx1030" "--rocm-path=${rocm-device-libs}" ];
+    # targetCompiler = "${gccOffloading}/bin/g++";
+    # targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-O3" "-fopenmp" "-fno-stack-protector" "-foffload=-lm" "-foffload=amdgcn-amdhsa=-march=gfx906" ];
+    languageName = "c++";
+    languageVersion = "c++17";
+    fileExtension = "cpp";
+    ldPrefix = "${pkgs.gcc-unwrapped.lib}/lib";
+    name = "cpp_openmp_amd";
+    displayName = "C++ with OpenMP (clang++) AMD";
+    logo = ../logos/cpp.png;
+    includeFlags = [ "-I" ];
+    # includeFlags = [ "-idirafter" ];
+  };
   cpp_openacc_kernel = kernelMaker {
     targetCompiler = "${gccOffloading}/bin/g++";
     targetFlags = [ "-fPIC" "-shared" "-rdynamic" "-std=c++17" "-O3" "-fopenacc" "-fno-stack-protector" "-foffload=-lm" "-foffload=-misa=sm_35" ];
@@ -109,6 +128,18 @@ let
     name = "fortran_openacc";
     displayName = "Fortran with OpenACC (gfortran)";
     logo = ../logos/fortran.png;
+    includeFlags = [ "-idirafter" ];
+  };
+  hipcc_kernel = kernelMaker {
+    targetCompiler = "${hipcc}/bin/hipcc";
+    targetFlags = [ "-fPIC" "-shared" "-O3" "-rdynamic" "-L${pkgs.gcc-unwrapped.lib}" "-L${pkgs.zlib}/lib" "-L${pkgs.ncurses5}/lib" "-L${pkgs.libdrm}/lib" ];
+    languageName = "c++";
+    languageVersion = "c++17";
+    fileExtension = "hip";
+    ldPrefix = "${pkgs.gcc-unwrapped.lib}/lib:${pkgs.zlib}/lib:${pkgs.ncurses5}/lib:${pkgs.libdrm}/lib";
+    name = "hip";
+    displayName = "HIP compiler";
+    logo = ../logos/cpp.png;
     includeFlags = [ "-idirafter" ];
   };
   nvcc_kernel = kernelMaker {
@@ -172,4 +203,5 @@ let
     includeFlags = [ "-I" ];
   };
 in
-[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel nvcc_kernel nvcpp_openmp_kernel nvcpp_openacc_kernel nvfortran_openmp_kernel nvfortran_openacc_kernel ]
+#[ cpp_openmp_kernel cpp_openacc_kernel fortran_openmp_kernel fortran_openacc_kernel nvcc_kernel nvcpp_openmp_kernel nvcpp_openacc_kernel nvfortran_openmp_kernel nvfortran_openacc_kernel cpp_openmp_amd_kernel hipcc_kernel ]
+[hipcc_kernel]
