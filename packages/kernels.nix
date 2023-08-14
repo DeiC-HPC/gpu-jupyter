@@ -3,6 +3,7 @@
 , python3
 , pkgs
 , jupyter_generic_kernel
+, mkKernel
 , gccOffloading
 , linuxPackages
 , cudatoolkit
@@ -34,35 +35,18 @@ let
           (pkg.override { inherit python3Packages; })
         ]
       );
-
-      kernelFile = {
-        argv = [
-          "${kernelEnv.interpreter}"
-          "-m"
-          "jupyter_c_kernel" # Not a mistake, we do not bother renaming the python module
-          "-f"
-          "{connection_file}"
-        ];
-        display_name = displayName;
-        language = languageName;
-        logo64 = "logo-64x64.png";
-      };
-
-      kernel = stdenv.mkDerivation {
-        inherit name;
-        phases = "installPhase";
-        src = logo;
-        buildInputs = [ ];
-        installPhase = ''
-          mkdir -p $out/kernels/kernel_${name}
-          cp $src $out/kernels/kernel_${name}/logo-64x64.png
-          echo '${builtins.toJSON kernelFile}' > $out/kernels/kernel_${name}/kernel.json
-        '';
-      };
     in
-    {
-      spec = kernel;
-      runtimePackages = [ ];
+    mkKernel {
+      argv = [
+        "${kernelEnv.interpreter}"
+        "-m"
+        "jupyter_c_kernel" # Not a mistake, we do not bother renaming the python module
+        "-f"
+        "{connection_file}"
+      ];
+      display_name = displayName;
+      language = languageName;
+      logo64 = "logo-64x64.png";
     };
 
 
