@@ -4,16 +4,16 @@ stdenv.mkDerivation rec {
   name = "amdgcn-amdhsa";
 
   enableParallelBuilding = true;
-  version = "9.0.1";
+  version = "22.1.4";
 
   src = fetchurl {
     url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/llvm-${version}.src.tar.xz";
-    sha256 = "16hwp3qa54c3a3v7h8nlw0fh5criqh0hlr1skybyk0cz70gyx880";
+    #sha256 = "16hwp3qa54c3a3v7h8nlw0fh5criqh0hlr1skybyk0cz70gyx880";
   };
 
   lld = fetchurl {
     url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}/lld-${version}.src.tar.xz";
-    sha256 = "10hckfxpapfnh6y9apjiya2jpw9nmbbmh8ayijx89mrg7snjn9l6";
+    #sha256 = "10hckfxpapfnh6y9apjiya2jpw9nmbbmh8ayijx89mrg7snjn9l6";
   };
 
   unpackPhase = ''

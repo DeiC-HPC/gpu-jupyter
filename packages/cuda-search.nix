@@ -11,6 +11,7 @@ let
     "/usr/lib/x86_64-linux-gnu"
     "/run/opengl-driver/lib/"
     "/.singularity.d/lib"
+    "/opt/nvidia"
   ];
   neededLibs = lib.strings.concatStringsSep " " [
     "libcuda.so.1"
