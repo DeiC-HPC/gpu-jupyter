@@ -148,6 +148,7 @@
               ps.numpy
               ps.matplotlib
               ps.jax
+              ps.jaxlib
             ];
           };
           kernel.c.test.enable = true;
