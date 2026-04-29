@@ -127,7 +127,15 @@
           packageOverrides = self: super: {
             jaxlib = super.callPackage ./packages/jaxlib-rocm.nix {
               cython = super.pythonPackages.cython;
-              inherit (super) absl-py flatbuffers numpy pybind11 scipy setuptools six wheel;
+              absl-py = super.absl-py;
+              flatbuffers = super.pythonPackages.flatbuffers;
+              numpy = super.numpy;
+              pybind11 = super.pythonPackages.pybind11;
+              scipy = super.scipy;
+              setuptools = super.setuptools;
+              six = super.six;
+              wheel = super.pythonPackages.wheel;
+
               rocmSupport = true;
               mklSupport = true;
             };
