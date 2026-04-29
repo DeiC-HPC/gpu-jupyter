@@ -140,12 +140,12 @@
           kernel.python.gpu = {
             enable = true;
             extraPackages = ps: [
-              ps.numpy
-              ps.matplotlib
-              (ps.toPythonModule jaxlib)
-              (ps.jax.override { jaxlib = jaxlib; })
-            ];[ ps.numpy ps.matplotlib jax jaxlib ];
-          };
+            ps.numpy
+            ps.matplotlib
+            (ps.toPythonModule jaxlib)
+            (ps.jax.override { jaxlib = jaxlib; })
+          ];
+        };
           kernel.c.test.enable = true;
           kernel.hip.gpu.enable = true;
           kernel.cuda.gpu = {
