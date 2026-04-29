@@ -72,7 +72,7 @@ let
     paths = [
       cudatoolkit.lib
       cudatoolkit.out
-    ] ++ lib.optionals (lib.versionOlder cudatoolkit.version "11") [
+    ] ++ lib.optionals (lib.versionOlder cudatoolkit.version "13") [
       # for some reason some of the required libs are in the targets/x86_64-linux
       # directory; not sure why but this works around it
       "${cudatoolkit}/targets/${stdenv.system}"
