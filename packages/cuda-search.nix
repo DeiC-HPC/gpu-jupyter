@@ -28,6 +28,10 @@ let
     CUDA_TMPDIR="$1"
 
     checkCudaDir() {
+      echo "$1"
+      if [ -e "$1" ]; then
+        echo "$1 exists"
+      fi
       if ! [[ -d "$1" ]]; then
         echo "dumped"
         return 1
