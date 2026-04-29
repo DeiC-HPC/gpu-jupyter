@@ -126,7 +126,8 @@
         python = pkgs.python312.override {
           packageOverrides = self: super: {
             jaxlib = super.callPackage ./packages/jaxlib-rocm.nix {
-              inherit (self) absl-py cython flatbuffers numpy pybind11 scipy setuptools six wheel;
+              cython = super.pythonPackages.cython;
+              inherit (self) absl-py flatbuffers numpy pybind11 scipy setuptools six wheel;
               rocmSupport = true;
               mklSupport = true;
             };
@@ -136,8 +137,8 @@
             };
           };
         };
-        jaxlib = python.ps.jaxlib;
-        jax = python.s.jax;
+        jaxlib = python.pkgs.jaxlib;
+        jax = python.pkgs.jax;
 
         # Jupyter
         #jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
