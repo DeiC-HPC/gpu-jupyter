@@ -123,7 +123,7 @@
         # Cuda hack
         cudaSearch = pkgs.callPackage ./packages/cuda-search.nix { };
 
-        python = pkgs.python311.override {
+        python = pkgs.python312.override {
           packageOverrides = self: super: {
             jaxlib = super.callPackage ./packages/jaxlib-rocm.nix {
               inherit (self) absl-py cython flatbuffers numpy pybind11 scipy setuptools six wheel;
