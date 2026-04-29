@@ -174,6 +174,14 @@
           imports = [ ./kernels (kernels) ];
         });
 
+        poetryEnv = poetry2nix.lib.mkPoetry2Nix {
+          inherit pkgs;
+
+          overrides = poetry2nix.overrides.withDefaults (final: prev: {
+            cython = final.python3Packages.cython;
+          });
+        };
+
       in rec {
         packages = rec {
           inherit jupyterlab mkKernel jax jaxlib;
