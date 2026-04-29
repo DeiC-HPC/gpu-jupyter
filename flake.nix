@@ -136,8 +136,8 @@
             };
           };
         };
-        jaxlib = ps.jaxlib
-        jax = ps.jax
+        jaxlib = ps.jaxlib;
+        jax = ps.jax;
 
         # Jupyter
         #jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
