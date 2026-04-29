@@ -18,7 +18,7 @@ let
       let
         res = import ./../../packages/kernelmaker.nix {
           inherit jupyter_generic_kernel name displayName;
-          python3 = pkgs.python310;
+          python3 = pkgs.python311;
           targetCompiler = "${hipcc}/bin/hipcc";
           targetFlags = [ "-fPIC" "-shared" "-O3" "-rdynamic" "-L${pkgs.gcc-unwrapped.lib}" "-L${pkgs.zlib}/lib" "-L${pkgs.ncurses5}/lib" "-L${pkgs.libdrm}/lib" ];
           languageName = "c++";

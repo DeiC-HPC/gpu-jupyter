@@ -18,7 +18,7 @@ let
       let
         res = import ./../../packages/kernelmaker.nix {
           inherit jupyter_generic_kernel name displayName;
-          python3 = pkgs.python310;
+          python3 = pkgs.python311;
           targetCompiler = "${cudatoolkit}/bin/nvcc";
           targetFlags = [ "--compiler-options" "-fPIC" "-shared" "-O3" "--compiler-options" "-rdynamic" "-L${cudatoolkit.lib}/lib" "-L${pkgs.gcc-unwrapped.lib}/lib" ];
           languageName = "c++";
