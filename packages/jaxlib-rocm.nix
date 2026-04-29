@@ -9,7 +9,7 @@
 , buildBazelPackage
 , buildPythonPackage
 , curl
-, cython ? python.pkgs.cython
+, cython
 , fetchFromGitHub
 , git
 , jsoncpp
