@@ -11,7 +11,6 @@ let
     "/usr/lib/x86_64-linux-gnu"
     "/run/opengl-driver/lib/"
     "/.singularity.d/lib"
-    "/opt/nvidia"
   ];
   neededLibs = lib.strings.concatStringsSep " " [
     "libcuda.so.1"
@@ -30,10 +29,12 @@ let
 
     checkCudaDir() {
       if ! [[ -d "$1" ]]; then
+        echo "dumped"
         return 1
       fi
       for lib in ${neededLibs}; do
         if ! [[ -f "$1/$lib" ]]; then
+          echo "$lib"
           return 1
         fi
       done
