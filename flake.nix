@@ -165,7 +165,7 @@
 
       in rec {
         packages = rec {
-          inherit jupyterlab mkKernel jax jaxlib;
+          inherit jupyterlab mkKernel ps.jax ps.jaxlib;
           startScript = pkgs.writeScript "start" ''
             #!${pkgs.bash}/bin/sh
             set -e
