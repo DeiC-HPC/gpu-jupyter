@@ -123,29 +123,33 @@
         # Cuda hack
         cudaSearch = pkgs.callPackage ./packages/cuda-search.nix { };
 
-        jaxlib = pkgs.callPackage ./packages/jaxlib-rocm.nix {
-          #inherit (pkgs) buildPythonPackage;
-          inherit (pkgs.python310Packages) absl-py buildPythonPackage cython flatbuffers numpy pybind11 scipy setuptools six wheel;
-          python = pkgs.python310;
+        python = pkgs.python310.override {
+          packageOverrides = self: super: {
+            jaxlib = super.callPackage ./packages/jaxlib-rocm.nix {
+              inherit (self) absl-py cython flatbuffers numpy pybind11 scipy setuptools six wheel;
+              rocmSupport = true;
+              mklSupport = true;
+            };
 
-          rocmSupport = true;
-          mklSupport = true;
+            jax = super.jax.override {
+              inherit (self) jaxlib;
+            };
+          };
         };
-
-        jax = pkgs.python310Packages.jax.override { inherit jaxlib; };
 
         # Jupyter
         #jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
         kernels = {...}: {
           kernel.python.gpu = {
             enable = true;
+            python = python;
+
             extraPackages = ps: [
-            ps.numpy
-            ps.matplotlib
-            (ps.toPythonModule jaxlib)
-            (ps.jax.override { jaxlib = jaxlib; })
-          ];
-        };
+              ps.numpy
+              ps.matplotlib
+              ps.jax
+            ];
+          };
           kernel.c.test.enable = true;
           kernel.hip.gpu.enable = true;
           kernel.cuda.gpu = {
