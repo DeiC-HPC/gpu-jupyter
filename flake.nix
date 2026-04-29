@@ -136,6 +136,8 @@
             };
           };
         };
+        jaxlib = ps.jaxlib
+        jax = ps.jax
 
         # Jupyter
         #jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
@@ -165,7 +167,7 @@
 
       in rec {
         packages = rec {
-          inherit jupyterlab mkKernel ps.jax ps.jaxlib;
+          inherit jupyterlab mkKernel jax jaxlib;
           startScript = pkgs.writeScript "start" ''
             #!${pkgs.bash}/bin/sh
             set -e
