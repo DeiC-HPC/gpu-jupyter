@@ -9,7 +9,7 @@ let
   }:
   let
     jupyter_generic_kernel = pkgs.callPackage ../../packages/jupyter-generic-kernel.nix;
-    hipcc = pkgs.rocmPackages.hip;
+    hipcc = pkgs.rocmPackages.hipcc;
     buildKernel = {
       self
       , system
