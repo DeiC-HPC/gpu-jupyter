@@ -194,7 +194,7 @@
 	      };
 
         lib = rec {
-          inherit mkKernel
+          inherit mkKernel;
         };
         packages.default = singularity-image;
         #apps.default.program = "${jupyterlab}/bin/jupyter-lab";
