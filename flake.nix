@@ -119,22 +119,21 @@
         #  rocm-device-libs = pkgs.rocm-device-libs;
         #  hipcc = pkgs.hip;
         #};
-
         # Cuda hack
         cudaSearch = pkgs.callPackage ./packages/cuda-search.nix { };
 
         python = pkgs.python312.override {
           packageOverrides = self: super: {
             jaxlib = super.callPackage ./packages/jaxlib-rocm.nix {
-              cython = super.pythonPackages.cython;
+              cython = super.cython;
               absl-py = super.absl-py;
-              flatbuffers = super.pythonPackages.flatbuffers;
+              flatbuffers = super.flatbuffers;
               numpy = super.numpy;
-              pybind11 = super.pythonPackages.pybind11;
+              pybind11 = super.pybind11;
               scipy = super.scipy;
               setuptools = super.setuptools;
               six = super.six;
-              wheel = super.pythonPackages.wheel;
+              wheel = super.wheel;
 
               rocmSupport = true;
               mklSupport = true;
