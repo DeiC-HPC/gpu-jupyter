@@ -4,7 +4,7 @@
 
   # Build-time dependencies:
 , addOpenGLRunpath ? null
-, bazel_6
+, bazel_7
 , binutils
 , buildBazelPackage
 , buildPythonPackage
@@ -138,7 +138,7 @@ let
   bazel-build = buildBazelPackage rec {
     name = "bazel-build-${pname}-${version}";
 
-    bazel = bazel_6;
+    bazel = bazel_7;
 
     src = fetchFromGitHub {
       owner = "google";
