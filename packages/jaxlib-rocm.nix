@@ -4,7 +4,7 @@
 
   # Build-time dependencies:
 , addOpenGLRunpath ? null
-, bazel_5
+, bazel_6
 , binutils
 , buildBazelPackage
 , buildPythonPackage
