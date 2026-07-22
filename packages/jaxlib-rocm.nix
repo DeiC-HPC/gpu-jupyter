@@ -177,7 +177,6 @@ let
       cudatoolkit
       cudnn
     ] ++ lib.optionals rocmSupport [
-      pkgs.hip
     ] ++ lib.optionals (!stdenv.isDarwin) [
       nsync
     ];
