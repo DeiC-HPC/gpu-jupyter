@@ -124,7 +124,7 @@
 
         python = pkgs.python312.override {
           packageOverrides = self: super: {
-            jaxlib = super.callPackage ./packages/jaxlib-rocm.nix {
+            jaxlib = pkgs.callPackage ./packages/jaxlib-rocm.nix {
               cython = super.cython;
               absl-py = super.absl-py;
               flatbuffers = super.flatbuffers;
