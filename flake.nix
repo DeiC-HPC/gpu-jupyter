@@ -175,7 +175,7 @@
 
       in rec {
         packages = rec {
-          inherit jupyterlab mkKernel jax jaxlib;
+          inherit jupyterlab jax jaxlib;
           startScript = pkgs.writeScript "start" ''
             #!${pkgs.bash}/bin/sh
             set -e
@@ -192,6 +192,10 @@
             memSize = 50000;
           };
 	      };
+
+        lib = rec {
+          inherit mkKernel
+        };
         packages.default = singularity-image;
         #apps.default.program = "${jupyterlab}/bin/jupyter-lab";
         #apps.default.type = "app";
