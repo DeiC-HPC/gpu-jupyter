@@ -138,7 +138,7 @@ let
   bazel-build = buildBazelPackage rec {
     name = "bazel-build-${pname}-${version}";
 
-    bazel = bazel_5;
+    bazel = bazel_6;
 
     src = fetchFromGitHub {
       owner = "google";
