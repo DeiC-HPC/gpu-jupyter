@@ -3,7 +3,7 @@
 , stdenv
 
   # Build-time dependencies:
-, addOpenGLRunpath
+, addOpenGLRunpath ? null
 , bazel_5
 , binutils
 , buildBazelPackage
