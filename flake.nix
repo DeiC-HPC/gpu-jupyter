@@ -169,8 +169,8 @@
             python = python;
 
             extraPackages = ps: [
-              # pkgs.python312Packages.numpy
-              # pkgs.python312Packages.matplotlib
+              pkgs.python312Packages.numpy
+              pkgs.python312Packages.matplotlib
               # ps.numpy
               # ps.matplotlib
               ps.jax
