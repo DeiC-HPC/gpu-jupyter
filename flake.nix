@@ -136,9 +136,9 @@
         # Cuda hack
         cudaSearch = pkgs.callPackage ./packages/cuda-search.nix { };
 
-        python = pkgs.python312.override {
+        python = pkgs.python311.override {
           packageOverrides = self: super: {
-            jaxlib = pkgs.python312Packages.callPackage ./packages/jaxlib-rocm.nix {
+            jaxlib = pkgs.python311Packages.callPackage ./packages/jaxlib-rocm.nix {
               cython = super.cython;
               absl-py = super.absl-py;
               flatbuffers = super.flatbuffers;
@@ -169,8 +169,8 @@
             python = python;
 
             extraPackages = ps: [
-              pkgs.python312Packages.numpy
-              pkgs.python312Packages.matplotlib
+              pkgs.python311Packages.numpy
+              pkgs.python311Packages.matplotlib
               jax
               jaxlib
             ];
