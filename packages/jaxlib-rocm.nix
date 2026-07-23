@@ -138,14 +138,6 @@ let
   bazel-build = buildBazelPackage rec {
     name = "bazel-build-${pname}-${version}";
 
-    preConfigure = ''
-    echo "=== ROCM CHECK ==="
-    ls -ld /opt || true
-    ls -ld /opt/rocm || true
-    ls -ld /opt/rocm-7.2.4 || true
-    readlink -f /opt/rocm || true
-    '';
-
     bazel = bazel_5;
 
     
@@ -203,6 +195,11 @@ let
     GCC_HOST_COMPILER_PATH = lib.optionalString cudaSupport "${cudatoolkit_cc_joined}/bin/gcc";
 
     preConfigure = ''
+    echo "=== ROCM CHECK ==="
+    ls -ld /opt || true
+    ls -ld /opt/rocm || true
+    ls -ld /opt/rocm-7.2.4 || true
+    readlink -f /opt/rocm || true
       # dummy ldconfig
       mkdir dummy-ldconfig
       echo "#!${stdenv.shell}" > dummy-ldconfig/ldconfig
