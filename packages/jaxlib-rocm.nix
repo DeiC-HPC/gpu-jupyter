@@ -216,8 +216,8 @@ let
       build --action_env TF_CUDA_VERSION="${lib.versions.majorMinor cudatoolkit.version}"
       build --action_env TF_CUDNN_VERSION="${lib.versions.major cudnn.version}"
       build:cuda --action_env TF_CUDA_COMPUTE_CAPABILITIES="${builtins.concatStringsSep "," cudaFlags.realArches}"
-      build --repo_env ROCM_PATH=/opt/rocm-7.2.4
-      build --action_env ROCM_PATH=/opt/rocm-7.2.4
+      build --repo_env ROCM_PATH=/opt/rocm
+      build --action_env ROCM_PATH=/opt/rocm
 
     '' + ''
       CFG
