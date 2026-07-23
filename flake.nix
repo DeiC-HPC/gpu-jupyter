@@ -158,8 +158,8 @@
             };
           };
         };
-        # jaxlib = python.pkgs.jaxlib;
-        # jax = python.pkgs.jax;
+        jaxlib = python.pkgs.jaxlib;
+        jax = python.pkgs.jax;
 
         # Jupyter
         #jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
@@ -169,8 +169,8 @@
             python = python;
 
             extraPackages = ps: [
-              ps.numpy
-              ps.matplotlib
+              # ps.numpy
+              # ps.matplotlib
               # ps.jax
               # ps.jaxlib
             ];
@@ -189,7 +189,7 @@
 
       in rec {
         packages = rec {
-          inherit jupyterlab;# jax jaxlib;
+          inherit jupyterlab jax jaxlib;
           startScript = pkgs.writeScript "start" ''
             #!${pkgs.bash}/bin/sh
             set -e
