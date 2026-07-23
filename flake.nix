@@ -169,11 +169,12 @@
             python = python;
 
             extraPackages = ps: [
-              pkgs.python312Packages.numpy
+              # pkgs.python312Packages.numpy
+              # pkgs.python312Packages.matplotlib
               # ps.numpy
               # ps.matplotlib
-              # ps.jax
-              # ps.jaxlib
+              ps.jax
+              ps.jaxlib
             ];
           };
           kernel.c.test.enable = true;
