@@ -171,8 +171,6 @@
             extraPackages = ps: [
               pkgs.python312Packages.numpy
               pkgs.python312Packages.matplotlib
-              # ps.numpy
-              # ps.matplotlib
               jax
               jaxlib
             ];
