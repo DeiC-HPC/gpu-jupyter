@@ -56,15 +56,6 @@ let
 
          def __init__(self, *args, **kwargs):
              super(CKernel, self).__init__(*args, **kwargs)
-    # @@ -84,7 +83,7 @@
-    #          os.close(mastertemp[0])
-    #          self.master_path = mastertemp[1]
-    #          filepath = path.join(path.dirname(path.realpath(__file__)), 'resources', 'master.c')
-    # -        subprocess.call(['gcc', filepath, '-std=c11', '-rdynamic', '-ldl', '-o', self.master_path])
-    # +        subprocess.call(['${gcc}/bin/gcc', filepath, '-std=c11', '-rdynamic', '-ldl', '-o', self.master_path])
-
-    #      def cleanup_files(self):
-    #          """Remove all the temporary files created by the kernel"""
     @@ -107,14 +106,17 @@
          def _write_to_stderr(self, contents):
              self.send_response(self.iopub_socket, 'stream', {'name': 'stderr', 'text': contents})

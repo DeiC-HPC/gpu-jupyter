@@ -203,7 +203,7 @@ let
       build --repo_env PYTHON_BIN_PATH="${python}/bin/python"
       build --action_env=PYENV_ROOT
       build --python_path="${python}/bin/python"
-      # build --distinct_host_configuration=false
+      build --distinct_host_configuration=false
       build --define PROTOBUF_INCLUDE_PATH="${protobuf}/include"
     '' + lib.optionalString cudaSupport ''
       build --action_env CUDA_TOOLKIT_PATH="${cudatoolkit_joined}"
