@@ -14,7 +14,8 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     poetry2nix = {
       url = "github:nix-community/poetry2nix";
