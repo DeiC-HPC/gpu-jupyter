@@ -170,8 +170,8 @@
             python = python;
 
             extraPackages = ps: [
-              # ps.numpy
-              # ps.matplotlib
+              ps.numpy
+              ps.matplotlib
               ps.jax
               ps.jaxlib
             ];

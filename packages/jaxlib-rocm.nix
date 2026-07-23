@@ -327,20 +327,39 @@ buildPythonPackage {
 
   nativeBuildInputs = lib.optional cudaSupport addOpenGLRunpath;
 
-  propagatedBuildInputs = [
-    absl-py
+  buildInputs = [
     curl
     double-conversion
-    flatbuffers
     giflib
     grpc
     jsoncpp
     libjpeg_turbo
+    protobuf
+    snappy
+  ];
+  
+  propagatedBuildInputs = [
+    absl-py
+    flatbuffers
     numpy
     scipy
     six
-    snappy
   ];
+
+  # propagatedBuildInputs = [
+  #   absl-py
+  #   curl
+  #   double-conversion
+  #   flatbuffers
+  #   giflib
+  #   grpc
+  #   jsoncpp
+  #   libjpeg_turbo
+  #   numpy
+  #   scipy
+  #   six
+  #   snappy
+  # ];
 
   pythonImportsCheck = [ "jaxlib" ];
 
