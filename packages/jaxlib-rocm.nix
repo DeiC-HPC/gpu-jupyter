@@ -138,7 +138,17 @@ let
   bazel-build = buildBazelPackage rec {
     name = "bazel-build-${pname}-${version}";
 
+    preConfigure = ''
+    echo "=== ROCM CHECK ==="
+    ls -ld /opt || true
+    ls -ld /opt/rocm || true
+    ls -ld /opt/rocm-7.2.4 || true
+    readlink -f /opt/rocm || true
+    '';
+
     bazel = bazel_5;
+
+    
 
     src = fetchFromGitHub {
       owner = "google";
