@@ -138,7 +138,6 @@
 
         python = pkgs.python312.override {
           packageOverrides = self: super: {
-            #jaxlib = pkgs.callPackage ./packages/jaxlib-rocm.nix {
             jaxlib = pkgs.python312Packages.callPackage ./packages/jaxlib-rocm.nix {
               cython = super.cython;
               absl-py = super.absl-py;
@@ -159,8 +158,8 @@
             };
           };
         };
-        jaxlib = python.pkgs.jaxlib;
-        jax = python.pkgs.jax;
+        # jaxlib = python.pkgs.jaxlib;
+        # jax = python.pkgs.jax;
 
         # Jupyter
         #jupyter_generic_kernel = pkgs.callPackage ../packages/jupyter-generic-kernel.nix;
@@ -172,8 +171,8 @@
             extraPackages = ps: [
               ps.numpy
               ps.matplotlib
-              ps.jax
-              ps.jaxlib
+              # ps.jax
+              # ps.jaxlib
             ];
           };
           kernel.c.test.enable = true;
@@ -190,7 +189,7 @@
 
       in rec {
         packages = rec {
-          inherit jupyterlab jax jaxlib;
+          inherit jupyterlab;# jax jaxlib;
           startScript = pkgs.writeScript "start" ''
             #!${pkgs.bash}/bin/sh
             set -e
