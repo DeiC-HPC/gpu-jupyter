@@ -169,7 +169,7 @@
             python = python;
 
             extraPackages = ps: [
-              ps.pandas
+              pkgs.python312Packages.numpy
               # ps.numpy
               # ps.matplotlib
               # ps.jax
