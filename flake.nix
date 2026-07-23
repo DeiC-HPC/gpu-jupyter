@@ -173,8 +173,8 @@
               pkgs.python312Packages.matplotlib
               # ps.numpy
               # ps.matplotlib
-              ps.jax
-              ps.jaxlib
+              jax
+              jaxlib
             ];
           };
           kernel.c.test.enable = true;
